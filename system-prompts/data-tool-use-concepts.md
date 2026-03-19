@@ -5,17 +5,17 @@ ccVersion: 2.1.77
 -->
 # Tool Use Concepts
 
-This file covers the conceptual foundations of tool use with the Claude API. For language-specific code examples, see the \`python/\`, \`typescript/\`, or other language folders.
+This file covers the conceptual foundations of tool use with the Claude API. For language-specific code examples, see the `python/`, `typescript/`, or other language folders.
 
 ## User-Defined Tools
 
 ### Tool Definition Structure
 
-> **Note:** When using the Tool Runner (beta), tool schemas are generated automatically from your function signatures (Python), Zod schemas (TypeScript), annotated classes (Java), \`jsonschema\` struct tags (Go), or \`BaseTool\` subclasses (Ruby). The raw JSON schema format below is for the manual approach or SDKs without tool runner support.
+> **Note:** When using the Tool Runner (beta), tool schemas are generated automatically from your function signatures (Python), Zod schemas (TypeScript), annotated classes (Java), `jsonschema` struct tags (Go), or `BaseTool` subclasses (Ruby). The raw JSON schema format below is for the manual approach or SDKs without tool runner support.
 
 Each tool requires a name, description, and JSON Schema for its inputs:
 
-\`\`\`json
+```json
 {
   "name": "get_weather",
   "description": "Get current weather for a location",
@@ -35,15 +35,15 @@ Each tool requires a name, description, and JSON Schema for its inputs:
     "required": ["location"]
   }
 }
-\`\`\`
+```
 
 **Best practices for tool definitions:**
 
-- Use clear, descriptive names (e.g., \`get_weather\`, \`search_database\`, \`send_email\`)
+- Use clear, descriptive names (e.g., `get_weather`, `search_database`, `send_email`)
 - Write detailed descriptions — Claude uses these to decide when to use the tool
 - Include descriptions for each property
-- Use \`enum\` for parameters with a fixed set of values
-- Mark truly required parameters in \`required\`; make others optional with defaults
+- Use `enum` for parameters with a fixed set of values
+- Mark truly required parameters in `required`; make others optional with defaults
 
 ---
 
@@ -53,24 +53,24 @@ Control when Claude uses tools:
 
 | Value                             | Behavior                                      |
 | --------------------------------- | --------------------------------------------- |
-| \`{"type": "auto"}\`                | Claude decides whether to use tools (default) |
-| \`{"type": "any"}\`                 | Claude must use at least one tool             |
-| \`{"type": "tool", "name": "..."}\` | Claude must use the specified tool            |
-| \`{"type": "none"}\`                | Claude cannot use tools                       |
+| `{"type": "auto"}`                | Claude decides whether to use tools (default) |
+| `{"type": "any"}`                 | Claude must use at least one tool             |
+| `{"type": "tool", "name": "..."}` | Claude must use the specified tool            |
+| `{"type": "none"}`                | Claude cannot use tools                       |
 
-Any \`tool_choice\` value can also include \`"disable_parallel_tool_use": true\` to force Claude to use at most one tool per response. By default, Claude may request multiple tool calls in a single response.
+Any `tool_choice` value can also include `"disable_parallel_tool_use": true` to force Claude to use at most one tool per response. By default, Claude may request multiple tool calls in a single response.
 
 ---
 
 ### Tool Runner vs Manual Loop
 
-**Tool Runner (Recommended):** The SDK's tool runner handles the agentic loop automatically — it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, and Ruby SDKs (beta). The Python SDK also provides MCP conversion helpers (\`anthropic.lib.tools.mcp\`) to convert MCP tools, prompts, and resources for use with the tool runner — see \`python/claude-api/tool-use.md\` for details.
+**Tool Runner (Recommended):** The SDK's tool runner handles the agentic loop automatically — it calls the API, detects tool use requests, executes your tool functions, feeds results back to Claude, and repeats until Claude stops calling tools. Available in Python, TypeScript, Java, Go, and Ruby SDKs (beta). The Python SDK also provides MCP conversion helpers (`anthropic.lib.tools.mcp`) to convert MCP tools, prompts, and resources for use with the tool runner — see `python/claude-api/tool-use.md` for details.
 
-**Manual Agentic Loop:** Use when you need fine-grained control over the loop (e.g., custom logging, conditional tool execution, human-in-the-loop approval). Loop until \`stop_reason == "end_turn"\`, always append the full \`response.content\` to preserve tool_use blocks, and ensure each \`tool_result\` includes the matching \`tool_use_id\`.
+**Manual Agentic Loop:** Use when you need fine-grained control over the loop (e.g., custom logging, conditional tool execution, human-in-the-loop approval). Loop until `stop_reason == "end_turn"`, always append the full `response.content` to preserve tool_use blocks, and ensure each `tool_result` includes the matching `tool_use_id`.
 
-**Stop reasons for server-side tools:** When using server-side tools (code execution, web search, etc.), the API runs a server-side sampling loop. If this loop reaches its default limit of 10 iterations, the response will have \`stop_reason: "pause_turn"\`. To continue, re-send the user message and assistant response and make another API request — the server will resume where it left off. Do NOT add an extra user message like "Continue." — the API detects the trailing \`server_tool_use\` block and knows to resume automatically.
+**Stop reasons for server-side tools:** When using server-side tools (code execution, web search, etc.), the API runs a server-side sampling loop. If this loop reaches its default limit of 10 iterations, the response will have `stop_reason: "pause_turn"`. To continue, re-send the user message and assistant response and make another API request — the server will resume where it left off. Do NOT add an extra user message like "Continue." — the API detects the trailing `server_tool_use` block and knows to resume automatically.
 
-\`\`\`python
+```python
 # Handle pause_turn in your agentic loop
 if response.stop_reason == "pause_turn":
     messages = [
@@ -81,9 +81,9 @@ if response.stop_reason == "pause_turn":
     response = client.messages.create(
         model="{{OPUS_ID}}", messages=messages, tools=tools
     )
-\`\`\`
+```
 
-Set a \`max_continuations\` limit (e.g., 5) to prevent infinite loops. For the full guide, see: \`https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons\`
+Set a `max_continuations` limit (e.g., 5) to prevent infinite loops. For the full guide, see: `https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons`
 
 > **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs within your tool functions and consider requiring confirmation for destructive operations. Use the manual agentic loop if you need human-in-the-loop approval before each tool execution.
 
@@ -91,15 +91,15 @@ Set a \`max_continuations\` limit (e.g., 5) to prevent infinite loops. For the f
 
 ### Handling Tool Results
 
-When Claude uses a tool, the response contains a \`tool_use\` block. You must:
+When Claude uses a tool, the response contains a `tool_use` block. You must:
 
 1. Execute the tool with the provided input
-2. Send the result back in a \`tool_result\` message
+2. Send the result back in a `tool_result` message
 3. Continue the conversation
 
-**Error handling in tool results:** When a tool execution fails, set \`"is_error": true\` and provide an informative error message. Claude will typically acknowledge the error and either try a different approach or ask for clarification.
+**Error handling in tool results:** When a tool execution fails, set `"is_error": true` and provide an informative error message. Claude will typically acknowledge the error and either try a different approach or ask for clarification.
 
-**Multiple tool calls:** Claude can request multiple tools in a single response. Handle them all before continuing — send all results back in a single \`user\` message.
+**Multiple tool calls:** Claude can request multiple tools in a single response. Handle them all before continuing — send all results back in a single `user` message.
 
 ---
 
@@ -117,16 +117,16 @@ The code execution tool lets Claude run code in a secure, sandboxed container. U
 
 ### Tool Definition
 
-The tool requires no schema — just declare it in the \`tools\` array:
+The tool requires no schema — just declare it in the `tools` array:
 
-\`\`\`json
+```json
 {
   "type": "code_execution_20260120",
   "name": "code_execution"
 }
-\`\`\`
+```
 
-Claude automatically gains access to \`bash_code_execution\` (run shell commands) and \`text_editor_code_execution\` (create/view/edit files).
+Claude automatically gains access to `bash_code_execution` (run shell commands) and `text_editor_code_execution` (create/view/edit files).
 
 ### Pre-installed Python Libraries
 
@@ -136,7 +136,7 @@ Claude automatically gains access to \`bash_code_execution\` (run shell commands
 - **Math**: sympy, mpmath
 - **Utilities**: tqdm, python-dateutil, pytz, sqlite3
 
-Additional packages can be installed at runtime via \`pip install\`.
+Additional packages can be installed at runtime via `pip install`.
 
 ### Supported File Types for Upload
 
@@ -148,18 +148,18 @@ Additional packages can be installed at runtime via \`pip install\`.
 
 ### Container Reuse
 
-Reuse containers across requests to maintain state (files, installed packages, variables). Extract the \`container_id\` from the first response and pass it to subsequent requests.
+Reuse containers across requests to maintain state (files, installed packages, variables). Extract the `container_id` from the first response and pass it to subsequent requests.
 
 ### Response Structure
 
 The response contains interleaved text and tool result blocks:
 
-- \`text\` — Claude's explanation
-- \`server_tool_use\` — What Claude is doing
-- \`bash_code_execution_tool_result\` — Code execution output (check \`return_code\` for success/failure)
-- \`text_editor_code_execution_tool_result\` — File operation results
+- `text` — Claude's explanation
+- `server_tool_use` — What Claude is doing
+- `bash_code_execution_tool_result` — Code execution output (check `return_code` for success/failure)
+- `text_editor_code_execution_tool_result` — File operation results
 
-> **Security:** Always sanitize filenames with \`os.path.basename()\` / \`path.basename()\` before writing downloaded files to disk to prevent path traversal attacks. Write files to a dedicated output directory.
+> **Security:** Always sanitize filenames with `os.path.basename()` / `path.basename()` before writing downloaded files to disk to prevent path traversal attacks. Write files to a dedicated output directory.
 
 ---
 
@@ -169,29 +169,29 @@ Web search and web fetch let Claude search the web and retrieve page content. Th
 
 ### Tool Definitions
 
-\`\`\`json
+```json
 [
   { "type": "web_search_20260209", "name": "web_search" },
   { "type": "web_fetch_20260209", "name": "web_fetch" }
 ]
-\`\`\`
+```
 
 ### Dynamic Filtering (Opus 4.6 / Sonnet 4.6)
 
-The \`web_search_20260209\` and \`web_fetch_20260209\` versions support **dynamic filtering** — Claude writes and executes code to filter search results before they reach the context window, improving accuracy and token efficiency. Dynamic filtering is built into these tool versions and activates automatically; you do not need to separately declare the \`code_execution\` tool or pass any beta header.
+The `web_search_20260209` and `web_fetch_20260209` versions support **dynamic filtering** — Claude writes and executes code to filter search results before they reach the context window, improving accuracy and token efficiency. Dynamic filtering is built into these tool versions and activates automatically; you do not need to separately declare the `code_execution` tool or pass any beta header.
 
-\`\`\`json
+```json
 {
   "tools": [
     { "type": "web_search_20260209", "name": "web_search" },
     { "type": "web_fetch_20260209", "name": "web_fetch" }
   ]
 }
-\`\`\`
+```
 
-Without dynamic filtering, the previous \`web_search_20250305\` version is also available.
+Without dynamic filtering, the previous `web_search_20250305` version is also available.
 
-> **Note:** Only include the standalone \`code_execution\` tool when your application needs code execution for its own purposes (data analysis, file processing, visualization) independent of web search. Including it alongside \`_20260209\` web tools creates a second execution environment that can confuse the model.
+> **Note:** Only include the standalone `code_execution` tool when your application needs code execution for its own purposes (data analysis, file processing, visualization) independent of web search. Including it alongside `_20260209` web tools creates a second execution environment that can confuse the model.
 
 ---
 
@@ -201,7 +201,7 @@ Programmatic tool calling lets Claude execute complex multi-tool workflows in co
 
 For full documentation, use WebFetch:
 
-- URL: \`https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling\`
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling`
 
 ---
 
@@ -211,7 +211,7 @@ The tool search tool lets Claude dynamically discover tools from large libraries
 
 For full documentation, use WebFetch:
 
-- URL: \`https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool\`
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/tool-search-tool`
 
 ---
 
@@ -221,7 +221,7 @@ You can provide sample tool calls directly in your tool definitions to demonstra
 
 For full documentation, use WebFetch:
 
-- URL: \`https://platform.claude.com/docs/en/agents-and-tools/tool-use/implement-tool-use\`
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/implement-tool-use`
 
 ---
 
@@ -231,7 +231,7 @@ Computer use lets Claude interact with a desktop environment (screenshots, mouse
 
 For full documentation, use WebFetch:
 
-- URL: \`https://platform.claude.com/docs/en/agents-and-tools/computer-use/overview\`
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/computer-use/overview`
 
 ---
 
@@ -242,15 +242,15 @@ The memory tool enables Claude to store and retrieve information across conversa
 ### Key Facts
 
 - Client-side tool — you control storage via your implementation
-- Supports commands: \`view\`, \`create\`, \`str_replace\`, \`insert\`, \`delete\`, \`rename\`
-- Operates on files in a \`/memories\` directory
+- Supports commands: `view`, `create`, `str_replace`, `insert`, `delete`, `rename`
+- Operates on files in a `/memories` directory
 - The Python, TypeScript, and Java SDKs provide helper classes/functions for implementing the memory backend
 
 > **Security:** Never store API keys, passwords, tokens, or other secrets in memory files. Be cautious with personally identifiable information (PII) — check data privacy regulations (GDPR, CCPA) before persisting user data. The reference implementations have no built-in access control; in multi-user systems, implement per-user memory directories and authentication in your tool handlers.
 
 For full implementation examples, use WebFetch:
 
-- Docs: \`https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md\`
+- Docs: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool.md`
 
 ---
 
@@ -260,37 +260,37 @@ Structured outputs constrain Claude's responses to follow a specific JSON schema
 
 Two features are available:
 
-- **JSON outputs** (\`output_config.format\`): Control Claude's response format
-- **Strict tool use** (\`strict: true\`): Guarantee valid tool parameter schemas
+- **JSON outputs** (`output_config.format`): Control Claude's response format
+- **Strict tool use** (`strict: true`): Guarantee valid tool parameter schemas
 
 **Supported models:** {{OPUS_NAME}}, {{SONNET_NAME}}, and {{HAIKU_NAME}}. Legacy models (Claude Opus 4.5, Claude Opus 4.1) also support structured outputs.
 
-> **Recommended:** Use \`client.messages.parse()\` which automatically validates responses against your schema. When using \`messages.create()\` directly, use \`output_config: {format: {...}}\`. The \`output_format\` convenience parameter is also accepted by some SDK methods (e.g., \`.parse()\`), but \`output_config.format\` is the canonical API-level parameter.
+> **Recommended:** Use `client.messages.parse()` which automatically validates responses against your schema. When using `messages.create()` directly, use `output_config: {format: {...}}`. The `output_format` convenience parameter is also accepted by some SDK methods (e.g., `.parse()`), but `output_config.format` is the canonical API-level parameter.
 
 ### JSON Schema Limitations
 
 **Supported:**
 
 - Basic types: object, array, string, integer, number, boolean, null
-- \`enum\`, \`const\`, \`anyOf\`, \`allOf\`, \`$ref\`/\`$def\`
-- String formats: \`date-time\`, \`time\`, \`date\`, \`duration\`, \`email\`, \`hostname\`, \`uri\`, \`ipv4\`, \`ipv6\`, \`uuid\`
-- \`additionalProperties: false\` (required for all objects)
+- `enum`, `const`, `anyOf`, `allOf`, `$ref`/`$def`
+- String formats: `date-time`, `time`, `date`, `duration`, `email`, `hostname`, `uri`, `ipv4`, `ipv6`, `uuid`
+- `additionalProperties: false` (required for all objects)
 
 **Not supported:**
 
 - Recursive schemas
-- Numerical constraints (\`minimum\`, \`maximum\`, \`multipleOf\`)
-- String constraints (\`minLength\`, \`maxLength\`)
+- Numerical constraints (`minimum`, `maximum`, `multipleOf`)
+- String constraints (`minLength`, `maxLength`)
 - Complex array constraints
-- \`additionalProperties\` set to anything other than \`false\`
+- `additionalProperties` set to anything other than `false`
 
 The Python and TypeScript SDKs automatically handle unsupported constraints by removing them from the schema sent to the API and validating them client-side.
 
 ### Important Notes
 
 - **First request latency**: New schemas incur a one-time compilation cost. Subsequent requests with the same schema use a 24-hour cache.
-- **Refusals**: If Claude refuses for safety reasons (\`stop_reason: "refusal"\`), the output may not match your schema.
-- **Token limits**: If \`stop_reason: "max_tokens"\`, output may be incomplete. Increase \`max_tokens\`.
+- **Refusals**: If Claude refuses for safety reasons (`stop_reason: "refusal"`), the output may not match your schema.
+- **Token limits**: If `stop_reason: "max_tokens"`, output may be incomplete. Increase `max_tokens`.
 - **Incompatible with**: Citations (returns 400 error), message prefilling.
 - **Works with**: Batches API, streaming, token counting, extended thinking.
 
@@ -299,7 +299,7 @@ The Python and TypeScript SDKs automatically handle unsupported constraints by r
 ## Tips for Effective Tool Use
 
 1. **Provide detailed descriptions**: Claude relies heavily on descriptions to understand when and how to use tools
-2. **Use specific tool names**: \`get_current_weather\` is better than \`weather\`
+2. **Use specific tool names**: `get_current_weather` is better than `weather`
 3. **Validate inputs**: Always validate tool inputs before execution
 4. **Handle errors gracefully**: Return informative error messages so Claude can adapt
 5. **Limit tool count**: Too many tools can confuse the model — keep the set focused
@@ -307,4 +307,4 @@ The Python and TypeScript SDKs automatically handle unsupported constraints by r
 
 For detailed tool use documentation, use WebFetch:
 
-- URL: \`https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\`
+- URL: `https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview`

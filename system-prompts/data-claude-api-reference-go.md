@@ -5,17 +5,17 @@ ccVersion: 2.1.78
 -->
 # Claude API — Go
 
-> **Note:** The Go SDK supports the Claude API and beta tool use with \`BetaToolRunner\`. Agent SDK is not yet available for Go.
+> **Note:** The Go SDK supports the Claude API and beta tool use with `BetaToolRunner`. Agent SDK is not yet available for Go.
 
 ## Installation
 
-\`\`\`bash
+```bash
 go get github.com/anthropics/anthropic-sdk-go
-\`\`\`
+```
 
 ## Client Initialization
 
-\`\`\`go
+```go
 import (
     "github.com/anthropics/anthropic-sdk-go"
     "github.com/anthropics/anthropic-sdk-go/option"
@@ -28,13 +28,13 @@ client := anthropic.NewClient()
 client := anthropic.NewClient(
     option.WithAPIKey("your-api-key"),
 )
-\`\`\`
+```
 
 ---
 
 ## Basic Message Request
 
-\`\`\`go
+```go
 response, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
     Model:     anthropic.ModelClaudeOpus4_6,
     MaxTokens: 16000,
@@ -51,13 +51,13 @@ for _, block := range response.Content {
         fmt.Println(variant.Text)
     }
 }
-\`\`\`
+```
 
 ---
 
 ## Streaming
 
-\`\`\`go
+```go
 stream := client.Messages.NewStreaming(context.Background(), anthropic.MessageNewParams{
     Model:     anthropic.ModelClaudeOpus4_6,
     MaxTokens: 64000,
@@ -79,11 +79,11 @@ for stream.Next() {
 if err := stream.Err(); err != nil {
     log.Fatal(err)
 }
-\`\`\`
+```
 
-**Accumulating the final message** (there is no \`GetFinalMessage()\` on the stream):
+**Accumulating the final message** (there is no `GetFinalMessage()` on the stream):
 
-\`\`\`go
+```go
 stream := client.Messages.NewStreaming(ctx, params)
 message := anthropic.Message{}
 for stream.Next() {
@@ -91,7 +91,7 @@ for stream.Next() {
 }
 if err := stream.Err(); err != nil { log.Fatal(err) }
 // message.Content now has the complete response
-\`\`\`
+```
 
 
 ---
@@ -100,9 +100,9 @@ if err := stream.Err(); err != nil { log.Fatal(err) }
 
 ### Tool Runner (Beta — Recommended)
 
-**Beta:** The Go SDK provides \`BetaToolRunner\` for automatic tool use loops via the \`toolrunner\` package.
+**Beta:** The Go SDK provides `BetaToolRunner` for automatic tool use loops via the `toolrunner` package.
 
-\`\`\`go
+```go
 import (
     "context"
     "fmt"
@@ -114,7 +114,7 @@ import (
 
 // Define tool input with jsonschema tags for automatic schema generation
 type GetWeatherInput struct {
-    City string \`json:"city" jsonschema:"required,description=The city name"\`
+    City string `json:"city" jsonschema:"required,description=The city name"`
 }
 
 // Create a tool with automatic schema generation from struct tags
@@ -163,23 +163,23 @@ for _, block := range message.Content {
         fmt.Println(block.Text)
     }
 }
-\`\`\`
+```
 
 **Key features of the Go tool runner:**
 
-- Automatic schema generation from Go structs via \`jsonschema\` tags
-- \`RunToCompletion()\` for simple one-shot usage
-- \`All()\` iterator for processing each message in the conversation
-- \`NextMessage()\` for step-by-step iteration
-- Streaming variant via \`NewToolRunnerStreaming()\` with \`AllStreaming()\`
+- Automatic schema generation from Go structs via `jsonschema` tags
+- `RunToCompletion()` for simple one-shot usage
+- `All()` iterator for processing each message in the conversation
+- `NextMessage()` for step-by-step iteration
+- Streaming variant via `NewToolRunnerStreaming()` with `AllStreaming()`
 
 ### Manual Loop
 
-For fine-grained control over the agentic loop, define tools with \`ToolParam\`, check \`StopReason\`, execute tools yourself, and feed \`tool_result\` blocks back. This is the pattern when you need to intercept, validate, or log tool calls.
+For fine-grained control over the agentic loop, define tools with `ToolParam`, check `StopReason`, execute tools yourself, and feed `tool_result` blocks back. This is the pattern when you need to intercept, validate, or log tool calls.
 
-Derived from \`anthropic-sdk-go/examples/tools/main.go\`.
+Derived from `anthropic-sdk-go/examples/tools/main.go`.
 
-\`\`\`go
+```go
 package main
 
 import (
@@ -238,8 +238,8 @@ func main() {
                 // 4. Parse the tool input. Use variant.JSON.Input.Raw() to get the
                 //    raw JSON — block.Input is json.RawMessage, not the parsed value.
                 var in struct {
-                    A int \`json:"a"\`
-                    B int \`json:"b"\`
+                    A int `json:"a"`
+                    B int `json:"b"`
                 }
                 if err := json.Unmarshal([]byte(variant.JSON.Input.Raw()), &in); err != nil {
                     log.Fatal(err)
@@ -261,31 +261,31 @@ func main() {
         messages = append(messages, anthropic.NewUserMessage(toolResults...))
     }
 }
-\`\`\`
+```
 
 **Key API surface:**
 
 | Symbol | Purpose |
 |---|---|
-| \`resp.ToParam()\` | Convert \`Message\` response → \`MessageParam\` for history |
-| \`block.AsAny().(type)\` | Type-switch on \`ContentBlockUnion\` variants |
-| \`variant.JSON.Input.Raw()\` | Raw JSON string of tool input (for \`json.Unmarshal\`) |
-| \`anthropic.NewToolResultBlock(id, content, isError)\` | Build \`tool_result\` block |
-| \`anthropic.NewUserMessage(blocks...)\` | Wrap tool results as a user turn |
-| \`anthropic.StopReasonToolUse\` | \`StopReason\` constant to check loop termination |
-| \`anthropic.ToolUnionParam{OfTool: &t}\` | Wrap \`ToolParam\` in the union for \`Tools:\` |
+| `resp.ToParam()` | Convert `Message` response → `MessageParam` for history |
+| `block.AsAny().(type)` | Type-switch on `ContentBlockUnion` variants |
+| `variant.JSON.Input.Raw()` | Raw JSON string of tool input (for `json.Unmarshal`) |
+| `anthropic.NewToolResultBlock(id, content, isError)` | Build `tool_result` block |
+| `anthropic.NewUserMessage(blocks...)` | Wrap tool results as a user turn |
+| `anthropic.StopReasonToolUse` | `StopReason` constant to check loop termination |
+| `anthropic.ToolUnionParam{OfTool: &t}` | Wrap `ToolParam` in the union for `Tools:` |
 
 ---
 
 ## Thinking
 
-Enable Claude's internal reasoning by setting \`Thinking\` in \`MessageNewParams\`. The response will contain \`ThinkingBlock\` content before the final \`TextBlock\`.
+Enable Claude's internal reasoning by setting `Thinking` in `MessageNewParams`. The response will contain `ThinkingBlock` content before the final `TextBlock`.
 
-**Adaptive thinking is the recommended mode for Claude 4.6+ models.** Claude decides dynamically when and how much to think. Combine with the \`effort\` parameter for cost-quality control.
+**Adaptive thinking is the recommended mode for Claude 4.6+ models.** Claude decides dynamically when and how much to think. Combine with the `effort` parameter for cost-quality control.
 
-Derived from \`anthropic-sdk-go/message.go\` (\`ThinkingConfigParamUnion\`, \`NewThinkingConfigAdaptiveParam\`).
+Derived from `anthropic-sdk-go/message.go` (`ThinkingConfigParamUnion`, `NewThinkingConfigAdaptiveParam`).
 
-\`\`\`go
+```go
 // There is no ThinkingConfigParamOfAdaptive helper — construct the union
 // struct-literal directly and take the address of the variant.
 adaptive := anthropic.NewThinkingConfigAdaptiveParam()
@@ -312,53 +312,53 @@ for _, block := range resp.Content {
         fmt.Println(b.Text)
     }
 }
-\`\`\`
+```
 
-> **Deprecated:** \`ThinkingConfigParamOfEnabled(budgetTokens)\` (fixed-budget extended thinking) still works on Claude 4.6 but is deprecated. Use adaptive thinking above.
+> **Deprecated:** `ThinkingConfigParamOfEnabled(budgetTokens)` (fixed-budget extended thinking) still works on Claude 4.6 but is deprecated. Use adaptive thinking above.
 
-To disable: \`anthropic.ThinkingConfigParamUnion{OfDisabled: &anthropic.ThinkingConfigDisabledParam{}}\`.
+To disable: `anthropic.ThinkingConfigParamUnion{OfDisabled: &anthropic.ThinkingConfigDisabledParam{}}`.
 
 ---
 
 ## Server-Side Tools
 
-Version-suffixed struct names with \`Param\` suffix. \`Name\`/\`Type\` are \`constant.*\` types — zero value marshals correctly, so \`{}\` works. Wrap in \`ToolUnionParam\` with the matching \`Of*\` field.
+Version-suffixed struct names with `Param` suffix. `Name`/`Type` are `constant.*` types — zero value marshals correctly, so `{}` works. Wrap in `ToolUnionParam` with the matching `Of*` field.
 
-\`\`\`go
+```go
 Tools: []anthropic.ToolUnionParam{
     {OfWebSearchTool20260209: &anthropic.WebSearchTool20260209Param{}},
     {OfBashTool20250124: &anthropic.ToolBash20250124Param{}},
     {OfTextEditor20250728: &anthropic.ToolTextEditor20250728Param{}},
     {OfCodeExecutionTool20260120: &anthropic.CodeExecutionTool20260120Param{}},
 },
-\`\`\`
+```
 
-Also available: \`WebFetchTool20260209Param\`, \`MemoryTool20250818Param\`, \`ToolSearchToolBm25_20251119Param\`, \`ToolSearchToolRegex20251119Param\`.
+Also available: `WebFetchTool20260209Param`, `MemoryTool20250818Param`, `ToolSearchToolBm25_20251119Param`, `ToolSearchToolRegex20251119Param`.
 
 ---
 
 ## PDF / Document Input
 
-\`NewDocumentBlock\` generic helper accepts any source type. \`MediaType\`/\`Type\` are auto-set.
+`NewDocumentBlock` generic helper accepts any source type. `MediaType`/`Type` are auto-set.
 
-\`\`\`go
+```go
 b64 := base64.StdEncoding.EncodeToString(pdfBytes)
 
 msg := anthropic.NewUserMessage(
     anthropic.NewDocumentBlock(anthropic.Base64PDFSourceParam{Data: b64}),
     anthropic.NewTextBlock("Summarize this document"),
 )
-\`\`\`
+```
 
-Other sources: \`URLPDFSourceParam{URL: "https://..."}\`, \`PlainTextSourceParam{Data: "..."}\`.
+Other sources: `URLPDFSourceParam{URL: "https://..."}`, `PlainTextSourceParam{Data: "..."}`.
 
 ---
 
 ## Files API (Beta)
 
-Under \`client.Beta.Files\`. Method is **\`Upload\`** (NOT \`New\`/\`Create\`), params struct is \`BetaFileUploadParams\`. The \`File\` field takes an \`io.Reader\`; use \`anthropic.File()\` to attach a filename + content-type for the multipart encoding.
+Under `client.Beta.Files`. Method is **`Upload`** (NOT `New`/`Create`), params struct is `BetaFileUploadParams`. The `File` field takes an `io.Reader`; use `anthropic.File()` to attach a filename + content-type for the multipart encoding.
 
-\`\`\`go
+```go
 f, _ := os.Open("./upload_me.txt")
 defer f.Close()
 
@@ -367,17 +367,17 @@ meta, err := client.Beta.Files.Upload(ctx, anthropic.BetaFileUploadParams{
     Betas: []anthropic.AnthropicBeta{anthropic.AnthropicBetaFilesAPI2025_04_14},
 })
 // meta.ID is the file_id to reference in subsequent message requests
-\`\`\`
+```
 
-Other \`Beta.Files\` methods: \`List\`, \`Delete\`, \`Download\`, \`GetMetadata\`.
+Other `Beta.Files` methods: `List`, `Delete`, `Download`, `GetMetadata`.
 
 ---
 
 ## Context Editing / Compaction (Beta)
 
-Use \`Beta.Messages.New\` with \`ContextManagement\` on \`BetaMessageNewParams\`. There is no \`NewBetaAssistantMessage\` — use \`.ToParam()\` for the round-trip.
+Use `Beta.Messages.New` with `ContextManagement` on `BetaMessageNewParams`. There is no `NewBetaAssistantMessage` — use `.ToParam()` for the round-trip.
 
-\`\`\`go
+```go
 params := anthropic.BetaMessageNewParams{
     Model:     anthropic.ModelClaudeOpus4_6,  // also supported: ModelClaudeSonnet4_6
     MaxTokens: 16000,
@@ -404,6 +404,6 @@ for _, block := range resp.Content {
         fmt.Println("compaction summary:", c.Content)
     }
 }
-\`\`\`
+```
 
-Other edit types: \`BetaClearToolUses20250919EditParam\`, \`BetaClearThinking20251015EditParam\`.
+Other edit types: `BetaClearToolUses20250919EditParam`, `BetaClearThinking20251015EditParam`.

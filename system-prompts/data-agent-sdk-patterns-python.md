@@ -7,7 +7,7 @@ ccVersion: 2.1.78
 
 ## Basic Agent
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
@@ -23,15 +23,15 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
 ## Custom Tools
 
-Custom tools require an MCP server. Use \`ClaudeSDKClient\` for full control (custom SDK MCP tools require \`ClaudeSDKClient\` — \`query()\` only supports external stdio/http MCP servers).
+Custom tools require an MCP server. Use `ClaudeSDKClient` for full control (custom SDK MCP tools require `ClaudeSDKClient` — `query()` only supports external stdio/http MCP servers).
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import (
     tool,
@@ -60,7 +60,7 @@ async def main():
                         print(block.text)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
@@ -70,7 +70,7 @@ anyio.run(main)
 
 Log file changes after any edit:
 
-\`\`\`python
+```python
 import anyio
 from datetime import datetime
 from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher, ResultMessage
@@ -78,7 +78,7 @@ from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher, ResultMessa
 async def log_file_change(input_data, tool_use_id, context):
     file_path = input_data.get('tool_input', {}).get('file_path', 'unknown')
     with open('./audit.log', 'a') as f:
-        f.write(f"{datetime.now()}: modified {file_path}\\n")
+        f.write(f"{datetime.now()}: modified {file_path}\n")
     return {}
 
 async def main():
@@ -96,13 +96,13 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
 ## Subagents
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, AgentDefinition, ResultMessage
 
@@ -124,7 +124,7 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
@@ -132,7 +132,7 @@ anyio.run(main)
 
 ### Browser Automation (Playwright)
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
@@ -149,11 +149,11 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ### Database Access (PostgreSQL)
 
-\`\`\`python
+```python
 import os
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
@@ -175,13 +175,13 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
 ## Permission Modes
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions
 
@@ -227,13 +227,13 @@ async def main():
         pass
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
 ## Error Recovery
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import (
     query,
@@ -263,13 +263,13 @@ async def run_with_recovery():
         print(f"Process error: {e}")
 
 anyio.run(run_with_recovery)
-\`\`\`
+```
 
 ---
 
 ## Session Resumption
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage, SystemMessage
 
@@ -293,13 +293,13 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
 ## Session History
 
-\`\`\`python
+```python
 from claude_agent_sdk import list_sessions, get_session_messages
 
 # List past sessions (sync function — no await)
@@ -312,13 +312,13 @@ if sessions:
     messages = get_session_messages(session_id=sessions[0].session_id)
     for msg in messages:
         print(msg)
-\`\`\`
+```
 
 ---
 
 ## Session Mutations
 
-\`\`\`python
+```python
 from claude_agent_sdk import rename_session, tag_session
 
 session_id = "your-session-id"
@@ -334,13 +334,13 @@ tag_session(session_id=session_id, tag=None)
 
 # Scope to a specific project directory
 rename_session(session_id=session_id, title="New title", directory="/path/to/project")
-\`\`\`
+```
 
 ---
 
 ## Custom System Prompt
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
@@ -361,4 +361,4 @@ Always provide specific line numbers and suggestions for improvement."""
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```

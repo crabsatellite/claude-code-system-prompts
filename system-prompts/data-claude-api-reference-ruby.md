@@ -5,17 +5,17 @@ ccVersion: 2.1.78
 -->
 # Claude API — Ruby
 
-> **Note:** The Ruby SDK supports the Claude API. A tool runner is available in beta via \`client.beta.messages.tool_runner()\`. Agent SDK is not yet available for Ruby.
+> **Note:** The Ruby SDK supports the Claude API. A tool runner is available in beta via `client.beta.messages.tool_runner()`. Agent SDK is not yet available for Ruby.
 
 ## Installation
 
-\`\`\`bash
+```bash
 gem install anthropic
-\`\`\`
+```
 
 ## Client Initialization
 
-\`\`\`ruby
+```ruby
 require "anthropic"
 
 # Default (uses ANTHROPIC_API_KEY env var)
@@ -23,13 +23,13 @@ client = Anthropic::Client.new
 
 # Explicit API key
 client = Anthropic::Client.new(api_key: "your-api-key")
-\`\`\`
+```
 
 ---
 
 ## Basic Message Request
 
-\`\`\`ruby
+```ruby
 message = client.messages.create(
   model: :"{{OPUS_ID}}",
   max_tokens: 16000,
@@ -43,13 +43,13 @@ message = client.messages.create(
 message.content.each do |block|
   puts block.text if block.type == :text
 end
-\`\`\`
+```
 
 ---
 
 ## Streaming
 
-\`\`\`ruby
+```ruby
 stream = client.messages.stream(
   model: :"{{OPUS_ID}}",
   max_tokens: 64000,
@@ -57,7 +57,7 @@ stream = client.messages.stream(
 )
 
 stream.text.each { |text| print(text) }
-\`\`\`
+```
 
 ---
 
@@ -67,7 +67,7 @@ The Ruby SDK supports tool use via raw JSON schema definitions and also provides
 
 ### Tool Runner (Beta)
 
-\`\`\`ruby
+```ruby
 class GetWeatherInput < Anthropic::BaseModel
   required :location, String, doc: "City and state, e.g. San Francisco, CA"
 end
@@ -90,7 +90,7 @@ client.beta.messages.tool_runner(
 ).each_message do |message|
   puts message.content
 end
-\`\`\`
+```
 
 ### Manual Loop
 

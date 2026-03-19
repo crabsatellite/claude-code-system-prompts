@@ -9,15 +9,15 @@ The Claude Agent SDK provides a higher-level interface for building AI agents wi
 
 ## Installation
 
-\`\`\`bash
+```bash
 pip install claude-agent-sdk
-\`\`\`
+```
 
 ---
 
 ## Quick Start
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
@@ -30,7 +30,7 @@ async def main():
             print(message.result)
 
 anyio.run(main)
-\`\`\`
+```
 
 ---
 
@@ -53,11 +53,11 @@ anyio.run(main)
 
 ## Primary Interfaces
 
-### \`query()\` — Simple One-Shot Usage
+### `query()` — Simple One-Shot Usage
 
-The \`query()\` function is the simplest way to run an agent. It returns an async iterator of messages.
+The `query()` function is the simplest way to run an agent. It returns an async iterator of messages.
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
 async for message in query(
@@ -66,13 +66,13 @@ async for message in query(
 ):
     if isinstance(message, ResultMessage):
         print(message.result)
-\`\`\`
+```
 
-### \`ClaudeSDKClient\` — Full Control
+### `ClaudeSDKClient` — Full Control
 
-\`ClaudeSDKClient\` provides full control over the agent lifecycle. Use it when you need custom tools, hooks, streaming, or the ability to interrupt execution.
+`ClaudeSDKClient` provides full control over the agent lifecycle. Use it when you need custom tools, hooks, streaming, or the ability to interrupt execution.
 
-\`\`\`python
+```python
 import anyio
 from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions, AssistantMessage, TextBlock
 
@@ -87,21 +87,21 @@ async def main():
                         print(block.text)
 
 anyio.run(main)
-\`\`\`
+```
 
-\`ClaudeSDKClient\` supports:
+`ClaudeSDKClient` supports:
 
-- **Context manager** (\`async with\`) for automatic resource cleanup
-- **\`client.query(prompt)\`** to send a prompt to the agent
-- **\`receive_response()\`** for streaming messages until completion
-- **\`interrupt()\`** to stop agent execution mid-task
+- **Context manager** (`async with`) for automatic resource cleanup
+- **`client.query(prompt)`** to send a prompt to the agent
+- **`receive_response()`** for streaming messages until completion
+- **`interrupt()`** to stop agent execution mid-task
 - **Required for custom tools** (via SDK MCP servers)
 
 ---
 
 ## Permission System
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
 async for message in query(
@@ -113,20 +113,20 @@ async for message in query(
 ):
     if isinstance(message, ResultMessage):
         print(message.result)
-\`\`\`
+```
 
 Permission modes:
 
-- \`"default"\`: Prompt for dangerous operations
-- \`"plan"\`: Planning only, no execution
-- \`"acceptEdits"\`: Auto-accept file edits
-- \`"bypassPermissions"\`: Skip all prompts (use with caution)
+- `"default"`: Prompt for dangerous operations
+- `"plan"`: Planning only, no execution
+- `"acceptEdits"`: Auto-accept file edits
+- `"bypassPermissions"`: Skip all prompts (use with caution)
 
 ---
 
 ## MCP (Model Context Protocol) Support
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage
 
 async for message in query(
@@ -139,7 +139,7 @@ async for message in query(
 ):
     if isinstance(message, ResultMessage):
         print(message.result)
-\`\`\`
+```
 
 ---
 
@@ -147,7 +147,7 @@ async for message in query(
 
 Customize agent behavior with hooks using callback functions:
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, HookMatcher, ResultMessage
 
 async def log_file_change(input_data, tool_use_id, context):
@@ -166,47 +166,47 @@ async for message in query(
 ):
     if isinstance(message, ResultMessage):
         print(message.result)
-\`\`\`
+```
 
-Hook callback inputs for tool-lifecycle events (\`PreToolUse\`, \`PostToolUse\`, \`PostToolUseFailure\`) include \`agent_id\` and \`agent_type\` fields, allowing hooks to identify which agent (main or subagent) triggered the tool call.
+Hook callback inputs for tool-lifecycle events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`) include `agent_id` and `agent_type` fields, allowing hooks to identify which agent (main or subagent) triggered the tool call.
 
-Available hook events: \`PreToolUse\`, \`PostToolUse\`, \`PostToolUseFailure\`, \`UserPromptSubmit\`, \`Stop\`, \`SubagentStop\`, \`PreCompact\`, \`Notification\`, \`SubagentStart\`, \`PermissionRequest\`
+Available hook events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `UserPromptSubmit`, `Stop`, `SubagentStop`, `PreCompact`, `Notification`, `SubagentStart`, `PermissionRequest`
 
 ---
 
 ## Common Options
 
-\`query()\` takes a top-level \`prompt\` (string) and an \`options\` object (\`ClaudeAgentOptions\`):
+`query()` takes a top-level `prompt` (string) and an `options` object (`ClaudeAgentOptions`):
 
-\`\`\`python
+```python
 async for message in query(prompt="...", options=ClaudeAgentOptions(...)):
-\`\`\`
+```
 
 | Option                              | Type   | Description                                                                |
 | ----------------------------------- | ------ | -------------------------------------------------------------------------- |
-| \`cwd\`                               | string | Working directory for file operations                                      |
-| \`allowed_tools\`                     | list   | Tools the agent can use (e.g., \`["Read", "Edit", "Bash"]\`)                |
-| \`tools\`                             | list   | Built-in tools to make available (restricts the default set)               |
-| \`disallowed_tools\`                  | list   | Tools to explicitly disallow                                               |
-| \`permission_mode\`                   | string | How to handle permission prompts                                           |
-| \`mcp_servers\`                       | dict   | MCP servers to connect to                                                  |
-| \`hooks\`                             | dict   | Hooks for customizing behavior                                             |
-| \`system_prompt\`                     | string | Custom system prompt                                                       |
-| \`max_turns\`                         | int    | Maximum agent turns before stopping                                        |
-| \`max_budget_usd\`                    | float  | Maximum budget in USD for the query                                        |
-| \`model\`                             | string | Model ID (default: determined by CLI)                                      |
-| \`agents\`                            | dict   | Subagent definitions (\`dict[str, AgentDefinition]\`)                        |
-| \`output_format\`                     | dict   | Structured output schema                                                   |
-| \`thinking\`                          | dict   | Thinking/reasoning control                                                 |
-| \`betas\`                             | list   | Beta features to enable (e.g., \`["context-1m-2025-08-07"]\`)               |
-| \`setting_sources\`                   | list   | Settings to load (e.g., \`["project"]\`). Default: none (no CLAUDE.md files) |
-| \`env\`                               | dict   | Environment variables to set for the session                               |
+| `cwd`                               | string | Working directory for file operations                                      |
+| `allowed_tools`                     | list   | Tools the agent can use (e.g., `["Read", "Edit", "Bash"]`)                |
+| `tools`                             | list   | Built-in tools to make available (restricts the default set)               |
+| `disallowed_tools`                  | list   | Tools to explicitly disallow                                               |
+| `permission_mode`                   | string | How to handle permission prompts                                           |
+| `mcp_servers`                       | dict   | MCP servers to connect to                                                  |
+| `hooks`                             | dict   | Hooks for customizing behavior                                             |
+| `system_prompt`                     | string | Custom system prompt                                                       |
+| `max_turns`                         | int    | Maximum agent turns before stopping                                        |
+| `max_budget_usd`                    | float  | Maximum budget in USD for the query                                        |
+| `model`                             | string | Model ID (default: determined by CLI)                                      |
+| `agents`                            | dict   | Subagent definitions (`dict[str, AgentDefinition]`)                        |
+| `output_format`                     | dict   | Structured output schema                                                   |
+| `thinking`                          | dict   | Thinking/reasoning control                                                 |
+| `betas`                             | list   | Beta features to enable (e.g., `["context-1m-2025-08-07"]`)               |
+| `setting_sources`                   | list   | Settings to load (e.g., `["project"]`). Default: none (no CLAUDE.md files) |
+| `env`                               | dict   | Environment variables to set for the session                               |
 
 ---
 
 ## Message Types
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, ResultMessage, SystemMessage
 
 async for message in query(
@@ -218,16 +218,16 @@ async for message in query(
         print(f"Stop reason: {message.stop_reason}")  # e.g., "end_turn", "max_turns"
     elif isinstance(message, SystemMessage) and message.subtype == "init":
         session_id = message.data.get("session_id")  # Capture for resuming later
-\`\`\`
+```
 
 Typed task message subclasses are available for better type safety when handling subagent task events:
-- \`TaskStartedMessage\` — emitted when a subagent task is registered
-- \`TaskProgressMessage\` — real-time progress updates with cumulative usage metrics
-- \`TaskNotificationMessage\` — task completion notifications
+- `TaskStartedMessage` — emitted when a subagent task is registered
+- `TaskProgressMessage` — real-time progress updates with cumulative usage metrics
+- `TaskNotificationMessage` — task completion notifications
 
-\`RateLimitEvent\` is emitted when the rate limit status transitions (e.g., from \`allowed\` to \`allowed_warning\` or \`rejected\`). Use it to warn users or back off gracefully:
+`RateLimitEvent` is emitted when the rate limit status transitions (e.g., from `allowed` to `allowed_warning` or `rejected`). Use it to warn users or back off gracefully:
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, RateLimitEvent
 
 async for message in query(prompt="...", options=ClaudeAgentOptions()):
@@ -235,13 +235,13 @@ async for message in query(prompt="...", options=ClaudeAgentOptions()):
         print(f"Rate limit status: {message.rate_limit_info.status}")
         if message.rate_limit_info.resets_at:
             print(f"Resets at: {message.rate_limit_info.resets_at}")
-\`\`\`
+```
 
 ---
 
 ## Subagents
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, AgentDefinition, ResultMessage
 
 async for message in query(
@@ -259,13 +259,13 @@ async for message in query(
 ):
     if isinstance(message, ResultMessage):
         print(message.result)
-\`\`\`
+```
 
 ---
 
 ## Error Handling
 
-\`\`\`python
+```python
 from claude_agent_sdk import query, ClaudeAgentOptions, CLINotFoundError, CLIConnectionError, ResultMessage
 
 try:
@@ -279,7 +279,7 @@ except CLINotFoundError:
     print("Claude Code CLI not found. Install with: pip install claude-agent-sdk")
 except CLIConnectionError as e:
     print(f"Connection error: {e}")
-\`\`\`
+```
 
 ---
 
@@ -287,7 +287,7 @@ except CLIConnectionError as e:
 
 Retrieve past session data with top-level functions:
 
-\`\`\`python
+```python
 from claude_agent_sdk import list_sessions, get_session_messages
 
 # List all past sessions (sync function — no await)
@@ -299,13 +299,13 @@ for session in sessions:
 messages = get_session_messages(session_id="...")
 for msg in messages:
     print(msg)
-\`\`\`
+```
 
 ### Session Mutations
 
 Rename or tag sessions (sync functions — no await):
 
-\`\`\`python
+```python
 from claude_agent_sdk import rename_session, tag_session
 
 # Rename a session
@@ -319,15 +319,15 @@ tag_session(session_id="...", tag=None)
 
 # Optionally scope to a specific project directory
 rename_session(session_id="...", title="New title", directory="/path/to/project")
-\`\`\`
+```
 
 ---
 
 ## MCP Server Management
 
-Manage MCP servers at runtime using \`ClaudeSDKClient\`:
+Manage MCP servers at runtime using `ClaudeSDKClient`:
 
-\`\`\`python
+```python
 async with ClaudeSDKClient(options=options) as client:
     # Reconnect a disconnected MCP server
     await client.reconnect_mcp_server("my-server")
@@ -337,14 +337,14 @@ async with ClaudeSDKClient(options=options) as client:
 
     # Get status of all MCP servers
     status = await client.get_mcp_status()  # returns McpStatusResponse
-\`\`\`
+```
 
 ---
 
 ## Best Practices
 
 1. **Always specify allowed_tools** — Explicitly list which tools the agent can use
-2. **Set working directory** — Always specify \`cwd\` for file operations
-3. **Use appropriate permission modes** — Start with \`"default"\` and only escalate when needed
-4. **Handle all message types** — Check for \`ResultMessage\` to get agent output
+2. **Set working directory** — Always specify `cwd` for file operations
+3. **Use appropriate permission modes** — Start with `"default"` and only escalate when needed
+4. **Handle all message types** — Check for `ResultMessage` to get agent output
 5. **Limit max_turns** — Prevent runaway agents with reasonable limits

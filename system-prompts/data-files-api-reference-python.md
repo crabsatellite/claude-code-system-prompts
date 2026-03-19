@@ -5,9 +5,9 @@ ccVersion: 2.1.78
 -->
 # Files API — Python
 
-The Files API uploads files for use in Messages API requests. Reference files via \`file_id\` in content blocks, avoiding re-uploads across multiple API calls.
+The Files API uploads files for use in Messages API requests. Reference files via `file_id` in content blocks, avoiding re-uploads across multiple API calls.
 
-**Beta:** Pass \`betas=["files-api-2025-04-14"]\` in your API calls (the SDK sets the required header automatically).
+**Beta:** Pass `betas=["files-api-2025-04-14"]` in your API calls (the SDK sets the required header automatically).
 
 ## Key Facts
 
@@ -21,7 +21,7 @@ The Files API uploads files for use in Messages API requests. Reference files vi
 
 ## Upload a File
 
-\`\`\`python
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -31,7 +31,7 @@ uploaded = client.beta.files.upload(
 )
 print(f"File ID: {uploaded.id}")
 print(f"Size: {uploaded.size_bytes} bytes")
-\`\`\`
+```
 
 ---
 
@@ -39,7 +39,7 @@ print(f"Size: {uploaded.size_bytes} bytes")
 
 ### PDF / Text Document
 
-\`\`\`python
+```python
 response = client.beta.messages.create(
     model="{{OPUS_ID}}",
     max_tokens=16000,
@@ -60,11 +60,11 @@ response = client.beta.messages.create(
 for block in response.content:
     if block.type == "text":
         print(block.text)
-\`\`\`
+```
 
 ### Image
 
-\`\`\`python
+```python
 image_file = client.beta.files.upload(
     file=("photo.png", open("photo.png", "rb"), "image/png"),
 )
@@ -84,7 +84,7 @@ response = client.beta.messages.create(
     }],
     betas=["files-api-2025-04-14"],
 )
-\`\`\`
+```
 
 ---
 
@@ -92,34 +92,34 @@ response = client.beta.messages.create(
 
 ### List Files
 
-\`\`\`python
+```python
 files = client.beta.files.list()
 for f in files.data:
     print(f"{f.id}: {f.filename} ({f.size_bytes} bytes)")
-\`\`\`
+```
 
 ### Get File Metadata
 
-\`\`\`python
+```python
 file_info = client.beta.files.retrieve_metadata("file_011CNha8iCJcU1wXNR6q4V8w")
 print(f"Filename: {file_info.filename}")
 print(f"MIME type: {file_info.mime_type}")
-\`\`\`
+```
 
 ### Delete a File
 
-\`\`\`python
+```python
 client.beta.files.delete("file_011CNha8iCJcU1wXNR6q4V8w")
-\`\`\`
+```
 
 ### Download a File
 
 Only files created by the code execution tool or skills can be downloaded (not user-uploaded files).
 
-\`\`\`python
+```python
 file_content = client.beta.files.download("file_011CNha8iCJcU1wXNR6q4V8w")
 file_content.write_to_file("output.txt")
-\`\`\`
+```
 
 ---
 
@@ -127,7 +127,7 @@ file_content.write_to_file("output.txt")
 
 Upload a document once, ask multiple questions about it:
 
-\`\`\`python
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -161,10 +161,10 @@ for question in questions:
         }],
         betas=["files-api-2025-04-14"],
     )
-    print(f"\\nQ: {question}")
+    print(f"\nQ: {question}")
     text = next((b.text for b in response.content if b.type == "text"), "")
     print(f"A: {text[:200]}")
 
 # 3. Clean up when done
 client.beta.files.delete(uploaded.id)
-\`\`\`
+```

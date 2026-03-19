@@ -9,19 +9,19 @@ Use these examples when the user needs raw HTTP requests or is working in a lang
 
 ## Setup
 
-\`\`\`bash
+```bash
 export ANTHROPIC_API_KEY="your-api-key"
-\`\`\`
+```
 
 ---
 
 ## Basic Message Request
 
-\`\`\`bash
-curl https://api.anthropic.com/v1/messages \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: $ANTHROPIC_API_KEY" \\
-  -H "anthropic-version: 2023-06-01" \\
+```bash
+curl https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -d '{
     "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
@@ -29,20 +29,20 @@ curl https://api.anthropic.com/v1/messages \\
       {"role": "user", "content": "What is the capital of France?"}
     ]
   }'
-\`\`\`
+```
 
 ### Parsing the response
 
-Use \`jq\` to extract fields from the JSON response. Do not use \`grep\`/\`sed\` —
+Use `jq` to extract fields from the JSON response. Do not use `grep`/`sed` —
 JSON strings can contain any character and regex parsing will break on quotes,
 escapes, or multi-line content.
 
-\`\`\`bash
+```bash
 # Capture the response, then extract fields
-response=$(curl -s https://api.anthropic.com/v1/messages \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: $ANTHROPIC_API_KEY" \\
-  -H "anthropic-version: 2023-06-01" \\
+response=$(curl -s https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -d '{"model":"{{OPUS_ID}}","max_tokens":16000,"messages":[{"role":"user","content":"Hello"}]}')
 
 # Print the first text block (-r strips the JSON quotes)
@@ -57,29 +57,29 @@ stop_reason=$(echo "$response" | jq -r '.stop_reason')
 
 # Extract all text blocks (content is an array; filter to type=="text")
 echo "$response" | jq -r '.content[] | select(.type == "text") | .text'
-\`\`\`
+```
 
 
 ---
 
 ## Streaming (SSE)
 
-\`\`\`bash
-curl https://api.anthropic.com/v1/messages \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: $ANTHROPIC_API_KEY" \\
-  -H "anthropic-version: 2023-06-01" \\
+```bash
+curl https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -d '{
     "model": "{{OPUS_ID}}",
     "max_tokens": 64000,
     "stream": true,
     "messages": [{"role": "user", "content": "Write a haiku"}]
   }'
-\`\`\`
+```
 
 The response is a stream of Server-Sent Events:
 
-\`\`\`
+```
 event: message_start
 data: {"type":"message_start","message":{"id":"msg_...","type":"message",...}}
 
@@ -97,17 +97,17 @@ data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"outpu
 
 event: message_stop
 data: {"type":"message_stop"}
-\`\`\`
+```
 
 ---
 
 ## Tool Use
 
-\`\`\`bash
-curl https://api.anthropic.com/v1/messages \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: $ANTHROPIC_API_KEY" \\
-  -H "anthropic-version: 2023-06-01" \\
+```bash
+curl https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -d '{
     "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
@@ -124,15 +124,15 @@ curl https://api.anthropic.com/v1/messages \\
     }],
     "messages": [{"role": "user", "content": "What is the weather in Paris?"}]
   }'
-\`\`\`
+```
 
-When Claude responds with a \`tool_use\` block, send the result back:
+When Claude responds with a `tool_use` block, send the result back:
 
-\`\`\`bash
-curl https://api.anthropic.com/v1/messages \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: $ANTHROPIC_API_KEY" \\
-  -H "anthropic-version: 2023-06-01" \\
+```bash
+curl https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -d '{
     "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
@@ -158,21 +158,21 @@ curl https://api.anthropic.com/v1/messages \\
       ]}
     ]
   }'
-\`\`\`
+```
 
 ---
 
 ## Extended Thinking
 
-> **Opus 4.6 and Sonnet 4.6:** Use adaptive thinking. \`budget_tokens\` is deprecated on both Opus 4.6 and Sonnet 4.6.
-> **Older models:** Use \`"type": "enabled"\` with \`"budget_tokens": N\` (must be < \`max_tokens\`, min 1024).
+> **Opus 4.6 and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is deprecated on both Opus 4.6 and Sonnet 4.6.
+> **Older models:** Use `"type": "enabled"` with `"budget_tokens": N` (must be < `max_tokens`, min 1024).
 
-\`\`\`bash
+```bash
 # Opus 4.6: adaptive thinking (recommended)
-curl https://api.anthropic.com/v1/messages \\
-  -H "Content-Type: application/json" \\
-  -H "x-api-key: $ANTHROPIC_API_KEY" \\
-  -H "anthropic-version: 2023-06-01" \\
+curl https://api.anthropic.com/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
   -d '{
     "model": "{{OPUS_ID}}",
     "max_tokens": 16000,
@@ -184,7 +184,7 @@ curl https://api.anthropic.com/v1/messages \\
     },
     "messages": [{"role": "user", "content": "Solve this step by step..."}]
   }'
-\`\`\`
+```
 
 ---
 
@@ -192,7 +192,7 @@ curl https://api.anthropic.com/v1/messages \\
 
 | Header              | Value              | Description                |
 | ------------------- | ------------------ | -------------------------- |
-| \`Content-Type\`      | \`application/json\` | Required                   |
-| \`x-api-key\`         | Your API key       | Authentication             |
-| \`anthropic-version\` | \`2023-06-01\`       | API version                |
-| \`anthropic-beta\`    | Beta feature IDs   | Required for beta features |
+| `Content-Type`      | `application/json` | Required                   |
+| `x-api-key`         | Your API key       | Authentication             |
+| `anthropic-version` | `2023-06-01`       | API version                |
+| `anthropic-beta`    | Beta feature IDs   | Required for beta features |

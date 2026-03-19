@@ -7,7 +7,7 @@ ccVersion: 2.1.78
 
 ## Quick Start
 
-\`\`\`python
+```python
 with client.messages.stream(
     model="{{OPUS_ID}}",
     max_tokens=64000,
@@ -15,11 +15,11 @@ with client.messages.stream(
 ) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)
-\`\`\`
+```
 
 ### Async
 
-\`\`\`python
+```python
 async with async_client.messages.stream(
     model="{{OPUS_ID}}",
     max_tokens=64000,
@@ -27,7 +27,7 @@ async with async_client.messages.stream(
 ) as stream:
     async for text in stream.text_stream:
         print(text, end="", flush=True)
-\`\`\`
+```
 
 ---
 
@@ -35,9 +35,9 @@ async with async_client.messages.stream(
 
 Claude may return text, thinking blocks, or tool use. Handle each appropriately:
 
-> **Opus 4.6:** Use \`thinking: {type: "adaptive"}\`. On older models, use \`thinking: {type: "enabled", budget_tokens: N}\` instead.
+> **Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
 
-\`\`\`python
+```python
 with client.messages.stream(
     model="{{OPUS_ID}}",
     max_tokens=64000,
@@ -47,16 +47,16 @@ with client.messages.stream(
     for event in stream:
         if event.type == "content_block_start":
             if event.content_block.type == "thinking":
-                print("\\n[Thinking...]")
+                print("\n[Thinking...]")
             elif event.content_block.type == "text":
-                print("\\n[Response:]")
+                print("\n[Response:]")
 
         elif event.type == "content_block_delta":
             if event.delta.type == "thinking_delta":
                 print(event.delta.thinking, end="", flush=True)
             elif event.delta.type == "text_delta":
                 print(event.delta.text, end="", flush=True)
-\`\`\`
+```
 
 ---
 
@@ -64,7 +64,7 @@ with client.messages.stream(
 
 The Python tool runner currently returns complete messages. Use streaming for individual API calls within a manual loop if you need per-token streaming with tools:
 
-\`\`\`python
+```python
 with client.messages.stream(
     model="{{OPUS_ID}}",
     max_tokens=64000,
@@ -76,13 +76,13 @@ with client.messages.stream(
 
     response = stream.get_final_message()
     # Continue with tool execution if response.stop_reason == "tool_use"
-\`\`\`
+```
 
 ---
 
 ## Getting the Final Message
 
-\`\`\`python
+```python
 with client.messages.stream(
     model="{{OPUS_ID}}",
     max_tokens=64000,
@@ -93,14 +93,14 @@ with client.messages.stream(
 
     # Get full message after streaming
     final_message = stream.get_final_message()
-    print(f"\\n\\nTokens used: {final_message.usage.output_tokens}")
-\`\`\`
+    print(f"\n\nTokens used: {final_message.usage.output_tokens}")
+```
 
 ---
 
 ## Streaming with Progress Updates
 
-\`\`\`python
+```python
 def stream_with_progress(client, **kwargs):
     """Stream a response with progress updates."""
     total_tokens = 0
@@ -120,15 +120,15 @@ def stream_with_progress(client, **kwargs):
 
         final_message = stream.get_final_message()
 
-    print(f"\\n\\n[Tokens used: {total_tokens}]")
+    print(f"\n\n[Tokens used: {total_tokens}]")
     return "".join(content_parts)
-\`\`\`
+```
 
 ---
 
 ## Error Handling in Streams
 
-\`\`\`python
+```python
 try:
     with client.messages.stream(
         model="{{OPUS_ID}}",
@@ -138,12 +138,12 @@ try:
         for text in stream.text_stream:
             print(text, end="", flush=True)
 except anthropic.APIConnectionError:
-    print("\\nConnection lost. Please retry.")
+    print("\nConnection lost. Please retry.")
 except anthropic.RateLimitError:
-    print("\\nRate limited. Please wait and retry.")
+    print("\nRate limited. Please wait and retry.")
 except anthropic.APIStatusError as e:
-    print(f"\\nAPI error: {e.status_code}")
-\`\`\`
+    print(f"\nAPI error: {e.status_code}")
+```
 
 ---
 
@@ -151,17 +151,17 @@ except anthropic.APIStatusError as e:
 
 | Event Type            | Description                 | When it fires                     |
 | --------------------- | --------------------------- | --------------------------------- |
-| \`message_start\`       | Contains message metadata   | Once at the beginning             |
-| \`content_block_start\` | New content block beginning | When a text/tool_use block starts |
-| \`content_block_delta\` | Incremental content update  | For each token/chunk              |
-| \`content_block_stop\`  | Content block complete      | When a block finishes             |
-| \`message_delta\`       | Message-level updates       | Contains \`stop_reason\`, usage     |
-| \`message_stop\`        | Message complete            | Once at the end                   |
+| `message_start`       | Contains message metadata   | Once at the beginning             |
+| `content_block_start` | New content block beginning | When a text/tool_use block starts |
+| `content_block_delta` | Incremental content update  | For each token/chunk              |
+| `content_block_stop`  | Content block complete      | When a block finishes             |
+| `message_delta`       | Message-level updates       | Contains `stop_reason`, usage     |
+| `message_stop`        | Message complete            | Once at the end                   |
 
 ## Best Practices
 
-1. **Always flush output** — Use \`flush=True\` to show tokens immediately
+1. **Always flush output** — Use `flush=True` to show tokens immediately
 2. **Handle partial responses** — If the stream is interrupted, you may have incomplete content
-3. **Track token usage** — The \`message_delta\` event contains usage information
+3. **Track token usage** — The `message_delta` event contains usage information
 4. **Use timeouts** — Set appropriate timeouts for your application
-5. **Default to streaming** — Use \`.get_final_message()\` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events
+5. **Default to streaming** — Use `.get_final_message()` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events

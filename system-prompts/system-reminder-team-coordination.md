@@ -23,11 +23,11 @@ Read the team config to discover your teammates' names. Check the task list peri
 
 **IMPORTANT:** Always refer to teammates by their NAME (e.g., "team-lead", "analyzer", "researcher"), never by UUID. When messaging, use the name directly:
 
-\`\`\`json
+```json
 {
   "to": "team-lead",
   "message": "Your message here",
   "summary": "Brief 5-10 word preview"
 }
-\`\`\`
+```
 </system-reminder>

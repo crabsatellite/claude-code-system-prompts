@@ -7,7 +7,7 @@ ccVersion: 2.1.78
 
 ## Basic Agent
 
-\`\`\`typescript
+```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 async function main() {
@@ -25,7 +25,7 @@ async function main() {
 }
 
 main();
-\`\`\`
+```
 
 ---
 
@@ -33,7 +33,7 @@ main();
 
 ### After Tool Use Hook
 
-\`\`\`typescript
+```typescript
 import { query, HookCallback } from "@anthropic-ai/claude-agent-sdk";
 import { appendFileSync } from "fs";
 
@@ -41,7 +41,7 @@ const logFileChange: HookCallback = async (input) => {
   const filePath = (input as any).tool_input?.file_path ?? "unknown";
   appendFileSync(
     "./audit.log",
-    \`\${new Date().toISOString()}: modified \${filePath}\\n\`,
+    `${new Date().toISOString()}: modified ${filePath}\n`,
   );
   return {};
 };
@@ -58,13 +58,13 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ---
 
 ## Subagents
 
-\`\`\`typescript
+```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
@@ -82,7 +82,7 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ---
 
@@ -90,7 +90,7 @@ for await (const message of query({
 
 ### Browser Automation (Playwright)
 
-\`\`\`typescript
+```typescript
 for await (const message of query({
   prompt: "Open example.com and describe what you see",
   options: {
@@ -101,13 +101,13 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ---
 
 ## Session Resumption
 
-\`\`\`typescript
+```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 let sessionId: string | undefined;
@@ -129,26 +129,26 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ---
 
 ## Session History
 
-\`\`\`typescript
+```typescript
 import { listSessions, getSessionMessages, getSessionInfo } from "@anthropic-ai/claude-agent-sdk";
 
 async function main() {
   // List past sessions (supports pagination via limit/offset)
   const sessions = await listSessions();
   for (const session of sessions) {
-    console.log(\`Session \${session.sessionId} in \${session.cwd} (tag: \${session.tag})\`);
+    console.log(`Session ${session.sessionId} in ${session.cwd} (tag: ${session.tag})`);
   }
 
   // Get metadata for a single session
   if (sessions.length > 0) {
     const info = await getSessionInfo(sessions[0].sessionId);
-    console.log(\`Created: \${info.createdAt}, Tag: \${info.tag}\`);
+    console.log(`Created: ${info.createdAt}, Tag: ${info.tag}`);
   }
 
   // Retrieve messages from the most recent session
@@ -161,13 +161,13 @@ async function main() {
 }
 
 main();
-\`\`\`
+```
 
 ---
 
 ## Session Mutations
 
-\`\`\`typescript
+```typescript
 import { renameSession, tagSession, forkSession } from "@anthropic-ai/claude-agent-sdk";
 
 async function main() {
@@ -184,31 +184,31 @@ async function main() {
 
   // Fork a conversation to branch from a point
   const { sessionId: forkedId } = await forkSession(sessionId);
-  console.log(\`Forked session: \${forkedId}\`);
+  console.log(`Forked session: ${forkedId}`);
 }
 
 main();
-\`\`\`
+```
 
 ---
 
 ## Custom System Prompt
 
-\`\`\`typescript
+```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
   prompt: "Review this code",
   options: {
     allowedTools: ["Read", "Glob", "Grep"],
-    systemPrompt: \`You are a senior code reviewer focused on:
+    systemPrompt: `You are a senior code reviewer focused on:
 1. Security vulnerabilities
 2. Performance issues
 3. Code maintainability
 
-Always provide specific line numbers and suggestions for improvement.\`,
+Always provide specific line numbers and suggestions for improvement.`,
   },
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```

@@ -7,13 +7,13 @@ ccVersion: 2.1.78
 
 ## Installation
 
-\`\`\`bash
+```bash
 pip install anthropic
-\`\`\`
+```
 
 ## Client Initialization
 
-\`\`\`python
+```python
 import anthropic
 
 # Default (uses ANTHROPIC_API_KEY env var)
@@ -24,13 +24,13 @@ client = anthropic.Anthropic(api_key="your-api-key")
 
 # Async client
 async_client = anthropic.AsyncAnthropic()
-\`\`\`
+```
 
 ---
 
 ## Basic Message Request
 
-\`\`\`python
+```python
 response = client.messages.create(
     model="{{OPUS_ID}}",
     max_tokens=16000,
@@ -43,20 +43,20 @@ response = client.messages.create(
 for block in response.content:
     if block.type == "text":
         print(block.text)
-\`\`\`
+```
 
 ---
 
 ## System Prompts
 
-\`\`\`python
+```python
 response = client.messages.create(
     model="{{OPUS_ID}}",
     max_tokens=16000,
     system="You are a helpful coding assistant. Always provide examples in Python.",
     messages=[{"role": "user", "content": "How do I read a JSON file?"}]
 )
-\`\`\`
+```
 
 ---
 
@@ -64,7 +64,7 @@ response = client.messages.create(
 
 ### Base64
 
-\`\`\`python
+```python
 import base64
 
 with open("image.png", "rb") as f:
@@ -88,11 +88,11 @@ response = client.messages.create(
         ]
     }]
 )
-\`\`\`
+```
 
 ### URL
 
-\`\`\`python
+```python
 response = client.messages.create(
     model="{{OPUS_ID}}",
     max_tokens=16000,
@@ -110,7 +110,7 @@ response = client.messages.create(
         ]
     }]
 )
-\`\`\`
+```
 
 ---
 
@@ -120,9 +120,9 @@ Cache large context to reduce costs (up to 90% savings).
 
 ### Automatic Caching (Recommended)
 
-Use top-level \`cache_control\` to automatically cache the last cacheable block in the request — no need to annotate individual content blocks:
+Use top-level `cache_control` to automatically cache the last cacheable block in the request — no need to annotate individual content blocks:
 
-\`\`\`python
+```python
 response = client.messages.create(
     model="{{OPUS_ID}}",
     max_tokens=16000,
@@ -130,13 +130,13 @@ response = client.messages.create(
     system="You are an expert on this large document...",
     messages=[{"role": "user", "content": "Summarize the key points"}]
 )
-\`\`\`
+```
 
 ### Manual Cache Control
 
-For fine-grained control, add \`cache_control\` to specific content blocks:
+For fine-grained control, add `cache_control` to specific content blocks:
 
-\`\`\`python
+```python
 response = client.messages.create(
     model="{{OPUS_ID}}",
     max_tokens=16000,
@@ -159,16 +159,16 @@ response = client.messages.create(
     }],
     messages=[{"role": "user", "content": "Summarize the key points"}]
 )
-\`\`\`
+```
 
 ---
 
 ## Extended Thinking
 
-> **Opus 4.6 and Sonnet 4.6:** Use adaptive thinking. \`budget_tokens\` is deprecated on both Opus 4.6 and Sonnet 4.6.
-> **Older models:** Use \`thinking: {type: "enabled", budget_tokens: N}\` (must be < \`max_tokens\`, min 1024).
+> **Opus 4.6 and Sonnet 4.6:** Use adaptive thinking. `budget_tokens` is deprecated on both Opus 4.6 and Sonnet 4.6.
+> **Older models:** Use `thinking: {type: "enabled", budget_tokens: N}` (must be < `max_tokens`, min 1024).
 
-\`\`\`python
+```python
 # Opus 4.6: adaptive thinking (recommended)
 response = client.messages.create(
     model="{{OPUS_ID}}",
@@ -184,13 +184,13 @@ for block in response.content:
         print(f"Thinking: {block.thinking}")
     elif block.type == "text":
         print(f"Response: {block.text}")
-\`\`\`
+```
 
 ---
 
 ## Error Handling
 
-\`\`\`python
+```python
 import anthropic
 
 try:
@@ -213,7 +213,7 @@ except anthropic.APIStatusError as e:
         print(f"API error: {e.message}")
 except anthropic.APIConnectionError:
     print("Network error. Check internet connection.")
-\`\`\`
+```
 
 ---
 
@@ -221,7 +221,7 @@ except anthropic.APIConnectionError:
 
 The API is stateless — send the full conversation history each time.
 
-\`\`\`python
+```python
 class ConversationManager:
     """Manage multi-turn conversations with the Claude API."""
 
@@ -259,20 +259,20 @@ conversation = ConversationManager(
 
 response1 = conversation.send("My name is Alice.")
 response2 = conversation.send("What's my name?")  # Claude remembers "Alice"
-\`\`\`
+```
 
 **Rules:**
 
-- Messages must alternate between \`user\` and \`assistant\`
-- First message must be \`user\`
+- Messages must alternate between `user` and `assistant`
+- First message must be `user`
 
 ---
 
 ### Compaction (long conversations)
 
-> **Beta, Opus 4.6 and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a \`compaction\` block; you must pass it back on subsequent requests — append \`response.content\`, not just the text.
+> **Beta, Opus 4.6 and Sonnet 4.6.** When conversations approach the 200K context window, compaction automatically summarizes earlier context server-side. The API returns a `compaction` block; you must pass it back on subsequent requests — append `response.content`, not just the text.
 
-\`\`\`python
+```python
 import anthropic
 
 client = anthropic.Anthropic()
@@ -300,22 +300,22 @@ def chat(user_message: str) -> str:
 print(chat("Help me build a Python web scraper"))
 print(chat("Add support for JavaScript-rendered pages"))
 print(chat("Now add rate limiting and error handling"))
-\`\`\`
+```
 
 ---
 
 ## Stop Reasons
 
-The \`stop_reason\` field in the response indicates why the model stopped generating:
+The `stop_reason` field in the response indicates why the model stopped generating:
 
 | Value | Meaning |
 |-------|---------|
-| \`end_turn\` | Claude finished its response naturally |
-| \`max_tokens\` | Hit the \`max_tokens\` limit — increase it or use streaming |
-| \`stop_sequence\` | Hit a custom stop sequence |
-| \`tool_use\` | Claude wants to call a tool — execute it and continue |
-| \`pause_turn\` | Model paused and can be resumed (agentic flows) |
-| \`refusal\` | Claude refused for safety reasons — output may not match your schema |
+| `end_turn` | Claude finished its response naturally |
+| `max_tokens` | Hit the `max_tokens` limit — increase it or use streaming |
+| `stop_sequence` | Hit a custom stop sequence |
+| `tool_use` | Claude wants to call a tool — execute it and continue |
+| `pause_turn` | Model paused and can be resumed (agentic flows) |
+| `refusal` | Claude refused for safety reasons — output may not match your schema |
 
 ---
 
@@ -323,7 +323,7 @@ The \`stop_reason\` field in the response indicates why the model stopped genera
 
 ### 1. Use Prompt Caching for Repeated Context
 
-\`\`\`python
+```python
 # Automatic caching (simplest — caches the last cacheable block)
 response = client.messages.create(
     model="{{OPUS_ID}}",
@@ -335,11 +335,11 @@ response = client.messages.create(
 
 # First request: full cost
 # Subsequent requests: ~90% cheaper for cached portion
-\`\`\`
+```
 
 ### 2. Choose the Right Model
 
-\`\`\`python
+```python
 # Default to Opus for most tasks
 response = client.messages.create(
     model="{{OPUS_ID}}",  # $5.00/$25.00 per 1M tokens
@@ -360,11 +360,11 @@ simple_response = client.messages.create(
     max_tokens=256,
     messages=[{"role": "user", "content": "Classify this as positive or negative"}]
 )
-\`\`\`
+```
 
 ### 3. Use Token Counting Before Requests
 
-\`\`\`python
+```python
 count_response = client.messages.count_tokens(
     model="{{OPUS_ID}}",
     messages=messages,
@@ -372,16 +372,16 @@ count_response = client.messages.count_tokens(
 )
 
 estimated_input_cost = count_response.input_tokens * 0.000005  # $5/1M tokens
-print(f"Estimated input cost: \${estimated_input_cost:.4f}")
-\`\`\`
+print(f"Estimated input cost: ${estimated_input_cost:.4f}")
+```
 
 ---
 
 ## Retry with Exponential Backoff
 
-> **Note:** The Anthropic SDK automatically retries rate limit (429) and server errors (5xx) with exponential backoff. You can configure this with \`max_retries\` (default: 2). Only implement custom retry logic if you need behavior beyond what the SDK provides.
+> **Note:** The Anthropic SDK automatically retries rate limit (429) and server errors (5xx) with exponential backoff. You can configure this with `max_retries` (default: 2). Only implement custom retry logic if you need behavior beyond what the SDK provides.
 
-\`\`\`python
+```python
 import time
 import random
 import anthropic
@@ -412,4 +412,4 @@ def call_with_retry(
         time.sleep(delay)
 
     raise last_exception
-\`\`\`
+```

@@ -9,15 +9,15 @@ The Claude Agent SDK provides a higher-level interface for building AI agents wi
 
 ## Installation
 
-\`\`\`bash
+```bash
 npm install @anthropic-ai/claude-agent-sdk
-\`\`\`
+```
 
 ---
 
 ## Quick Start
 
-\`\`\`typescript
+```typescript
 import { query } from "@anthropic-ai/claude-agent-sdk";
 
 for await (const message of query({
@@ -28,7 +28,7 @@ for await (const message of query({
     console.log(message.result);
   }
 }
-\`\`\`
+```
 
 ---
 
@@ -51,7 +51,7 @@ for await (const message of query({
 
 ## Permission System
 
-\`\`\`typescript
+```typescript
 for await (const message of query({
   prompt: "Refactor the authentication module",
   options: {
@@ -61,21 +61,21 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 Permission modes:
 
-- \`"default"\`: Prompt for dangerous operations
-- \`"plan"\`: Planning only, no execution
-- \`"acceptEdits"\`: Auto-accept file edits
-- \`"dontAsk"\`: Don't prompt — **denies** anything not pre-approved (not an auto-approve mode)
-- \`"bypassPermissions"\`: Skip all prompts (requires \`allowDangerouslySkipPermissions: true\` in options)
+- `"default"`: Prompt for dangerous operations
+- `"plan"`: Planning only, no execution
+- `"acceptEdits"`: Auto-accept file edits
+- `"dontAsk"`: Don't prompt — **denies** anything not pre-approved (not an auto-approve mode)
+- `"bypassPermissions"`: Skip all prompts (requires `allowDangerouslySkipPermissions: true` in options)
 
 ---
 
 ## MCP (Model Context Protocol) Support
 
-\`\`\`typescript
+```typescript
 for await (const message of query({
   prompt: "Open example.com and describe what you see",
   options: {
@@ -86,13 +86,13 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ### In-Process MCP Tools
 
-You can define custom tools that run in-process using \`tool()\` and \`createSdkMcpServer\`:
+You can define custom tools that run in-process using `tool()` and `createSdkMcpServer`:
 
-\`\`\`typescript
+```typescript
 import { query, tool, createSdkMcpServer } from "@anthropic-ai/claude-agent-sdk";
 import { z } from "zod";
 
@@ -109,13 +109,13 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ---
 
 ## Hooks
 
-\`\`\`typescript
+```typescript
 import { query, HookCallback } from "@anthropic-ai/claude-agent-sdk";
 import { appendFileSync } from "fs";
 
@@ -123,7 +123,7 @@ const logFileChange: HookCallback = async (input) => {
   const filePath = (input as any).tool_input?.file_path ?? "unknown";
   appendFileSync(
     "./audit.log",
-    \`\${new Date().toISOString()}: modified \${filePath}\\n\`,
+    `${new Date().toISOString()}: modified ${filePath}\n`,
   );
   return {};
 };
@@ -140,49 +140,49 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
-Hook event inputs for tool-lifecycle events (\`PreToolUse\`, \`PostToolUse\`, \`PostToolUseFailure\`) include \`agent_id\` and \`agent_type\` fields, allowing hooks to identify which agent (main or subagent) triggered the tool call.
+Hook event inputs for tool-lifecycle events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`) include `agent_id` and `agent_type` fields, allowing hooks to identify which agent (main or subagent) triggered the tool call.
 
-Available hook events: \`PreToolUse\`, \`PostToolUse\`, \`PostToolUseFailure\`, \`Notification\`, \`UserPromptSubmit\`, \`SessionStart\`, \`SessionEnd\`, \`Stop\`, \`SubagentStart\`, \`SubagentStop\`, \`PreCompact\`, \`PermissionRequest\`, \`Setup\`, \`TeammateIdle\`, \`TaskCompleted\`, \`ConfigChange\`, \`Elicitation\`, \`ElicitationResult\`, \`WorktreeCreate\`, \`WorktreeRemove\`, \`InstructionsLoaded\`
+Available hook events: `PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `Notification`, `UserPromptSubmit`, `SessionStart`, `SessionEnd`, `Stop`, `SubagentStart`, `SubagentStop`, `PreCompact`, `PermissionRequest`, `Setup`, `TeammateIdle`, `TaskCompleted`, `ConfigChange`, `Elicitation`, `ElicitationResult`, `WorktreeCreate`, `WorktreeRemove`, `InstructionsLoaded`
 
 ---
 
 ## Common Options
 
-\`query()\` takes a top-level \`prompt\` (string) and an \`options\` object:
+`query()` takes a top-level `prompt` (string) and an `options` object:
 
-\`\`\`typescript
+```typescript
 query({ prompt: "...", options: { ... } })
-\`\`\`
+```
 
 | Option                              | Type   | Description                                                                |
 | ----------------------------------- | ------ | -------------------------------------------------------------------------- |
-| \`cwd\`                               | string | Working directory for file operations                                      |
-| \`allowedTools\`                      | array  | Tools the agent can use (e.g., \`["Read", "Edit", "Bash"]\`)                |
-| \`tools\`                             | array \\| preset | Built-in tools to make available (\`string[]\` or \`{type:'preset', preset:'claude_code'}\`) |
-| \`disallowedTools\`                   | array  | Tools to explicitly disallow                                               |
-| \`permissionMode\`                    | string | How to handle permission prompts                                           |
-| \`allowDangerouslySkipPermissions\`   | bool   | Must be \`true\` to use \`permissionMode: "bypassPermissions"\`                |
-| \`mcpServers\`                        | object | MCP servers to connect to                                                  |
-| \`hooks\`                             | object | Hooks for customizing behavior                                             |
-| \`systemPrompt\`                      | string \\| preset | Custom system prompt (\`string\` or \`{type:'preset', preset:'claude_code', append?:string}\`) |
-| \`maxTurns\`                          | number | Maximum agent turns before stopping                                        |
-| \`maxBudgetUsd\`                      | number | Maximum budget in USD for the query                                        |
-| \`model\`                             | string | Model ID (default: determined by CLI)                                      |
-| \`agents\`                            | object | Subagent definitions (\`Record<string, AgentDefinition>\`)                   |
-| \`outputFormat\`                      | object | Structured output schema                                                   |
-| \`thinking\`                          | object | Thinking/reasoning control                                                 |
-| \`betas\`                             | array  | Beta features to enable (e.g., \`["context-1m-2025-08-07"]\`)               |
-| \`settingSources\`                    | array  | Settings to load (e.g., \`["project"]\`). Default: none (no CLAUDE.md files) |
-| \`env\`                               | object | Environment variables to set for the session                               |
-| \`agentProgressSummaries\`            | bool   | Enable periodic AI-generated progress summaries on \`task_progress\` events  |
+| `cwd`                               | string | Working directory for file operations                                      |
+| `allowedTools`                      | array  | Tools the agent can use (e.g., `["Read", "Edit", "Bash"]`)                |
+| `tools`                             | array \| preset | Built-in tools to make available (`string[]` or `{type:'preset', preset:'claude_code'}`) |
+| `disallowedTools`                   | array  | Tools to explicitly disallow                                               |
+| `permissionMode`                    | string | How to handle permission prompts                                           |
+| `allowDangerouslySkipPermissions`   | bool   | Must be `true` to use `permissionMode: "bypassPermissions"`                |
+| `mcpServers`                        | object | MCP servers to connect to                                                  |
+| `hooks`                             | object | Hooks for customizing behavior                                             |
+| `systemPrompt`                      | string \| preset | Custom system prompt (`string` or `{type:'preset', preset:'claude_code', append?:string}`) |
+| `maxTurns`                          | number | Maximum agent turns before stopping                                        |
+| `maxBudgetUsd`                      | number | Maximum budget in USD for the query                                        |
+| `model`                             | string | Model ID (default: determined by CLI)                                      |
+| `agents`                            | object | Subagent definitions (`Record<string, AgentDefinition>`)                   |
+| `outputFormat`                      | object | Structured output schema                                                   |
+| `thinking`                          | object | Thinking/reasoning control                                                 |
+| `betas`                             | array  | Beta features to enable (e.g., `["context-1m-2025-08-07"]`)               |
+| `settingSources`                    | array  | Settings to load (e.g., `["project"]`). Default: none (no CLAUDE.md files) |
+| `env`                               | object | Environment variables to set for the session                               |
+| `agentProgressSummaries`            | bool   | Enable periodic AI-generated progress summaries on `task_progress` events  |
 
 ---
 
 ## Subagents
 
-\`\`\`typescript
+```typescript
 for await (const message of query({
   prompt: "Use the code-reviewer agent to review this codebase",
   options: {
@@ -198,30 +198,30 @@ for await (const message of query({
 })) {
   if ("result" in message) console.log(message.result);
 }
-\`\`\`
+```
 
 ---
 
 ## Message Types
 
-\`\`\`typescript
+```typescript
 for await (const message of query({
   prompt: "Find TODO comments",
   options: { allowedTools: ["Read", "Glob", "Grep"] },
 })) {
   if ("result" in message) {
     console.log(message.result);
-    console.log(\`Stop reason: \${message.stop_reason}\`); // e.g., "end_turn", "tool_use", "max_tokens"
+    console.log(`Stop reason: ${message.stop_reason}`); // e.g., "end_turn", "tool_use", "max_tokens"
   } else if (message.type === "system" && message.subtype === "init") {
     const sessionId = message.session_id; // Capture for resuming later
   }
 }
-\`\`\`
+```
 
 Task-related system messages are also emitted for subagent operations:
-- \`task_started\` — emitted when a subagent task is registered
-- \`task_progress\` — real-time progress updates with cumulative usage metrics, tool counts, and duration (enable \`agentProgressSummaries\` option for periodic AI-generated summaries via the \`summary\` field)
-- \`task_notification\` — task completion notifications (includes \`tool_use_id\` for correlating with originating tool calls)
+- `task_started` — emitted when a subagent task is registered
+- `task_progress` — real-time progress updates with cumulative usage metrics, tool counts, and duration (enable `agentProgressSummaries` option for periodic AI-generated summaries via the `summary` field)
+- `task_notification` — task completion notifications (includes `tool_use_id` for correlating with originating tool calls)
 
 ---
 
@@ -229,13 +229,13 @@ Task-related system messages are also emitted for subagent operations:
 
 Retrieve past session data:
 
-\`\`\`typescript
+```typescript
 import { listSessions, getSessionMessages, getSessionInfo } from "@anthropic-ai/claude-agent-sdk";
 
 // List all past sessions (supports pagination via limit/offset)
 const sessions = await listSessions({ limit: 20, offset: 0 });
 for (const session of sessions) {
-  console.log(\`\${session.sessionId}: \${session.cwd} (tag: \${session.tag})\`);
+  console.log(`${session.sessionId}: ${session.cwd} (tag: ${session.tag})`);
 }
 
 // Get metadata for a single session
@@ -248,13 +248,13 @@ const messages = await getSessionMessages(sessionId, { limit: 50, offset: 0 });
 for (const msg of messages) {
   console.log(msg);
 }
-\`\`\`
+```
 
 ### Session Mutations
 
 Rename, tag, or fork sessions:
 
-\`\`\`typescript
+```typescript
 import { renameSession, tagSession, forkSession } from "@anthropic-ai/claude-agent-sdk";
 
 // Rename a session
@@ -268,7 +268,7 @@ await tagSession(sessionId, null);
 
 // Fork a session — branch a conversation from a specific point
 const { sessionId: forkedId } = await forkSession(sessionId);
-\`\`\`
+```
 
 ---
 
@@ -276,7 +276,7 @@ const { sessionId: forkedId } = await forkSession(sessionId);
 
 Manage MCP servers at runtime on a running query:
 
-\`\`\`typescript
+```typescript
 // Reconnect a disconnected MCP server
 await queryHandle.reconnectMcpServer("my-server");
 
@@ -288,14 +288,14 @@ const statuses: McpServerStatus[] = await queryHandle.mcpServerStatus();
 for (const s of statuses) {
   console.log(s.name, s.scope, s.tools.length, s.error);
 }
-\`\`\`
+```
 
 ---
 
 ## Best Practices
 
 1. **Always specify allowedTools** — Explicitly list which tools the agent can use
-2. **Set working directory** — Always specify \`cwd\` for file operations
-3. **Use appropriate permission modes** — Start with \`"default"\` and only escalate when needed
-4. **Handle all message types** — Check for \`result\` property to get agent output
+2. **Set working directory** — Always specify `cwd` for file operations
+3. **Use appropriate permission modes** — Start with `"default"` and only escalate when needed
+4. **Handle all message types** — Check for `result` property to get agent output
 5. **Limit maxTurns** — Prevent runaway agents with reasonable limits

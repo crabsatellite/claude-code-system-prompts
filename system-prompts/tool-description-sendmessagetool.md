@@ -16,14 +16,14 @@ Every call has three fields:
 - **message**: The message content — either a plain string or a structured protocol object (required)
 - **summary**: A 5-10 word preview shown in the UI
 
-## Addressing (\`to\`)
+## Addressing (`to`)
 
 There is one team per session. Addressing is by member name:
 
 | Address | Meaning |
 |---------|---------|
-| \`"researcher"\` | Direct message to the teammate named "researcher" |
-| \`"*"\` | Broadcast to all teammates (except yourself) |
+| `"researcher"` | Direct message to the teammate named "researcher" |
+| `"*"` | Broadcast to all teammates (except yourself) |
 
 Structured protocol messages (shutdown, plan approval) cannot be broadcast — they require a specific recipient name.
 
@@ -31,13 +31,13 @@ Structured protocol messages (shutdown, plan approval) cannot be broadcast — t
 
 Send a message to a **single specific teammate**:
 
-\`\`\`json
+```json
 {
   "to": "researcher",
   "message": "Start working on task #1",
   "summary": "Assign task #1 to researcher"
 }
-\`\`\`
+```
 
 **IMPORTANT for teammates**: Your plain text output is NOT visible to the team lead or other teammates. To communicate with anyone on your team, you **MUST** use this tool. Just typing a response or acknowledgment in text is not enough.
 
@@ -45,13 +45,13 @@ Send a message to a **single specific teammate**:
 
 Send the **same message to everyone** on the team at once:
 
-\`\`\`json
+```json
 {
   "to": "*",
   "message": "Critical blocking issue found — stop all work",
   "summary": "Critical blocking issue found"
 }
-\`\`\`
+```
 
 **WARNING: Broadcasting is expensive.** Each broadcast sends a separate message to every teammate. Costs scale linearly with team size.
 
@@ -59,7 +59,7 @@ Send the **same message to everyone** on the team at once:
 - Critical issues requiring immediate team-wide attention
 - Major announcements that genuinely affect every teammate equally
 
-**Default to direct messages.** Use a specific \`to\` name for responding to one teammate, normal back-and-forth, or anything that doesn't require everyone's attention.
+**Default to direct messages.** Use a specific `to` name for responding to one teammate, normal back-and-forth, or anything that doesn't require everyone's attention.
 
 ## Structured Protocol Messages
 
@@ -67,7 +67,7 @@ Send the **same message to everyone** on the team at once:
 
 Ask a teammate to gracefully shut down:
 
-\`\`\`json
+```json
 {
   "to": "researcher",
   "message": {
@@ -75,16 +75,16 @@ Ask a teammate to gracefully shut down:
     "reason": "Task complete, wrapping up the session"
   }
 }
-\`\`\`
+```
 
 The teammate will receive a shutdown request and can either approve (exit) or reject (continue working).
 
 ### Shutdown Response
 
-When you receive a shutdown request as a JSON message with \`type: "shutdown_request"\`, you **MUST** respond to approve or reject it. Do NOT just acknowledge in text — call this tool.
+When you receive a shutdown request as a JSON message with `type: "shutdown_request"`, you **MUST** respond to approve or reject it. Do NOT just acknowledge in text — call this tool.
 
 **Approve:**
-\`\`\`json
+```json
 {
   "to": "team-lead",
   "message": {
@@ -93,12 +93,12 @@ When you receive a shutdown request as a JSON message with \`type: "shutdown_req
     "approve": true
   }
 }
-\`\`\`
+```
 
-Extract \`requestId\` from the incoming JSON and pass it as \`request_id\`. This sends confirmation to the leader and terminates your process.
+Extract `requestId` from the incoming JSON and pass it as `request_id`. This sends confirmation to the leader and terminates your process.
 
 **Reject:**
-\`\`\`json
+```json
 {
   "to": "team-lead",
   "message": {
@@ -108,14 +108,14 @@ Extract \`requestId\` from the incoming JSON and pass it as \`request_id\`. This
     "reason": "Still working on task #3, need 5 more minutes"
   }
 }
-\`\`\`
+```
 
 ### Plan Approval Response
 
-When a teammate with \`plan_mode_required\` calls ExitPlanMode, they send you a plan approval request as a JSON message with \`type: "plan_approval_request"\`.
+When a teammate with `plan_mode_required` calls ExitPlanMode, they send you a plan approval request as a JSON message with `type: "plan_approval_request"`.
 
 **Approve:**
-\`\`\`json
+```json
 {
   "to": "researcher",
   "message": {
@@ -124,12 +124,12 @@ When a teammate with \`plan_mode_required\` calls ExitPlanMode, they send you a 
     "approve": true
   }
 }
-\`\`\`
+```
 
 After approval, the teammate will automatically exit plan mode and can proceed with implementation.
 
 **Reject:**
-\`\`\`json
+```json
 {
   "to": "researcher",
   "message": {
@@ -139,7 +139,7 @@ After approval, the teammate will automatically exit plan mode and can proceed w
     "feedback": "Please add error handling for the API calls"
   }
 }
-\`\`\`
+```
 
 The teammate will receive the rejection with your feedback and can revise their plan.
 

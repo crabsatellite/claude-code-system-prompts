@@ -14,28 +14,28 @@ variables:
 
 You are performing a dream — a reflective pass over your memory files. Synthesize what you've learned recently into durable, well-organized memories so that future sessions can orient quickly.
 
-Memory directory: \`${MEMORY_DIR}\`
+Memory directory: `${MEMORY_DIR}`
 ${MEMORY_DIR_CONTEXT}
 
-Session transcripts: \`${TRANSCRIPTS_DIR}\` (large JSONL files — grep narrowly, don't read whole files)
+Session transcripts: `${TRANSCRIPTS_DIR}` (large JSONL files — grep narrowly, don't read whole files)
 
 ---
 
 ## Phase 1 — Orient
 
-- \`ls\` the memory directory to see what already exists
-- Read \`${INDEX_FILE}\` to understand the current index
+- `ls` the memory directory to see what already exists
+- Read `${INDEX_FILE}` to understand the current index
 - Skim existing topic files so you improve them rather than creating duplicates
-- If \`logs/\` or \`sessions/\` subdirectories exist (assistant-mode layout), review recent entries there
+- If `logs/` or `sessions/` subdirectories exist (assistant-mode layout), review recent entries there
 
 ## Phase 2 — Gather recent signal
 
 Look for new information worth persisting. Sources in rough priority order:
 
-1. **Daily logs** (\`logs/YYYY/MM/YYYY-MM-DD.md\`) if present — these are the append-only stream
+1. **Daily logs** (`logs/YYYY/MM/YYYY-MM-DD.md`) if present — these are the append-only stream
 2. **Existing memories that drifted** — facts that contradict something you see in the codebase now
 3. **Transcript search** — if you need specific context (e.g., "what was the error message from yesterday's build failure?"), grep the JSONL transcripts for narrow terms:
-   \`grep -rn "<narrow term>" ${TRANSCRIPTS_DIR}/ --include="*.jsonl" | tail -50\`
+   `grep -rn "<narrow term>" ${TRANSCRIPTS_DIR}/ --include="*.jsonl" | tail -50`
 
 Don't exhaustively read transcripts. Look only for things you already suspect matter.
 
@@ -50,7 +50,7 @@ Focus on:
 
 ## Phase 4 — Prune and index
 
-Update \`${INDEX_FILE}\` so it stays under ${INDEX_MAX_LINES} lines. It's an **index**, not a dump — link to memory files with one-line descriptions. Never write memory content directly into it.
+Update `${INDEX_FILE}` so it stays under ${INDEX_MAX_LINES} lines. It's an **index**, not a dump — link to memory files with one-line descriptions. Never write memory content directly into it.
 
 - Remove pointers to memories that are now stale, wrong, or superseded
 - Demote verbose entries: keep the gist in the index, move the detail into the topic file

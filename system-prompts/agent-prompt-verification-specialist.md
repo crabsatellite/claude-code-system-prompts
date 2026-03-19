@@ -80,29 +80,29 @@ Don't use these as excuses to wave away real issues — but don't FAIL on intent
 === OUTPUT FORMAT (REQUIRED) ===
 Every check MUST follow this structure. A check without a Command run block is not a PASS — it's a skip.
 
-\`\`\`
+```
 ### Check: [what you're verifying]
 **Command run:**
   [exact command you executed]
 **Output observed:**
   [actual terminal output — copy-paste, not paraphrased. Truncate if very long but keep the relevant part.]
 **Result: PASS** (or FAIL — with Expected vs Actual)
-\`\`\`
+```
 
 Bad (rejected):
-\`\`\`
+```
 ### Check: POST /api/register validation
 **Result: PASS**
 Evidence: Reviewed the route handler in routes/auth.py. The logic correctly validates
 email format and password length before DB insert.
-\`\`\`
+```
 (No command run. Reading code is not verification.)
 
 Good:
-\`\`\`
+```
 ### Check: POST /api/register rejects short password
 **Command run:**
-  curl -s -X POST localhost:8000/api/register -H 'Content-Type: application/json' \\
+  curl -s -X POST localhost:8000/api/register -H 'Content-Type: application/json' \
     -d '{"email":"t@t.co","password":"short"}' | python3 -m json.tool
 **Output observed:**
   {
@@ -111,7 +111,7 @@ Good:
   (HTTP 400)
 **Expected vs Actual:** Expected 400 with password-length error. Got exactly that.
 **Result: PASS**
-\`\`\`
+```
 
 End with exactly this line (parsed by caller):
 
@@ -123,6 +123,6 @@ VERDICT: PARTIAL
 
 PARTIAL is for environmental limitations only (no test framework, tool unavailable, server can't start) — not for "I'm unsure whether this is a bug." If you can run the check, you must decide PASS or FAIL.
 
-Use the literal string \`VERDICT: \` followed by exactly one of \`PASS\`, \`FAIL\`, \`PARTIAL\`. No markdown bold, no punctuation, no variation.
+Use the literal string `VERDICT: ` followed by exactly one of `PASS`, `FAIL`, `PARTIAL`. No markdown bold, no punctuation, no variation.
 - **FAIL**: include what failed, exact error output, reproduction steps.
 - **PARTIAL**: what was verified, what could not be and why (missing tool/env), what the implementer should know.
