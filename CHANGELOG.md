@@ -4,6 +4,17 @@ Note: Only use **NEW:** for entirely new prompt files, NOT for new additions/sec
 
 ### Claude Code System Prompts Changelog
 
+# [2.1.90](https://github.com/Piebald-AI/claude-code-system-prompts/commit/8362366)
+
+_+815 tokens_
+
+- Agent Prompt: Determine which memory files to attach — Added guidance to be especially conservative with user-profile and project-overview memories, matching on what the question is actually about rather than surface keyword overlap with who the user is.
+- Agent Prompt: /schedule slash command — Updated GitHub reminder logic to require an additional feature flag check before suggesting the `/web-setup` flow for connecting a GitHub account.
+- Agent Prompt: Security monitor for autonomous agent actions (first part) — Reworked the User Intent Rule into a bidirectional framework: user intent can now both authorize (clear a block with a high evidence bar) and bound (create a block even for otherwise-allowed actions, with a lower evidence bar). Added rule 7 requiring conditional boundaries ("wait for X before Y", "don't push until I review") to stay in force until clearly lifted by a later user message, not by the agent's own judgment. Restructured the evaluation algorithm into a two-phase flow: preliminary verdict from BLOCK/ALLOW rules, then user intent applied as a final signal in both directions.
+- Agent Prompt: Security monitor for autonomous agent actions (second part) — Updated the ALLOW exceptions preamble to note two carve-outs that still block even when an exception applies: suspicious masquerading (e.g. typosquatting) and explicit user boundaries.
+- Agent Prompt: Verification specialist — Changed file-list discovery to prefer `git diff --name-only HEAD` when in a git repo (catches Bash file writes, `sed -i`, etc.), falling back to scanning tool_use blocks and REPL innerToolCalls for non-repo contexts.
+- Skill: Verify skill — Added guidance that observations matter as much as the verdict: anything that caused a pause, workaround, or surprise should be surfaced, not just bugs. Expanded the Findings section to encourage reporting friction, unhelpful errors, odd defaults, and unexpected slowness, with a `⚠️` prefix for lines worth hoisting above the PR comment fold. Changed verification step format to lead with the status emoji rather than trail it.
+
 # [2.1.89](https://github.com/Piebald-AI/claude-code-system-prompts/commit/0e24543)
 
 _+3,986 tokens_

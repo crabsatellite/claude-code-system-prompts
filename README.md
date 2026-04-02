@@ -34,7 +34,7 @@ Download it and try it out for free!  **https://piebald.ai/**
 > [!important]
 > **NEW (January 23, 2026): We've added all of Claude Code's ~40 system reminders to this list&mdash;see [System Reminders](#system-reminders).**
 
-This repository contains an up-to-date list of all Claude Code's various system prompts and their associated token counts as of **[Claude Code v2.1.89](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.89) (March 31st, 2026).**  It also contains a [**CHANGELOG.md**](./CHANGELOG.md) for the system prompts across 138 versions since v2.0.14.  From the team behind [<img src="https://github.com/Piebald-AI/piebald/raw/main/assets/logo.svg" width="15"> **Piebald.**](https://piebald.ai/)
+This repository contains an up-to-date list of all Claude Code's various system prompts and their associated token counts as of **[Claude Code v2.1.90](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.90) (April 1st, 2026).**  It also contains a [**CHANGELOG.md**](./CHANGELOG.md) for the system prompts across 139 versions since v2.0.14.  From the team behind [<img src="https://github.com/Piebald-AI/piebald/raw/main/assets/logo.svg" width="15"> **Piebald.**](https://piebald.ai/)
 
 **This repository is updated within minutes of each Claude Code release.  See the [changelog](./CHANGELOG.md), and follow [@PiebaldAI](https://x.com/PiebaldAI) on X for a summary of the system prompt changes in each release.**
 
@@ -89,7 +89,7 @@ Sub-agents and utilities.
 - [Agent Prompt: /batch slash command](./system-prompts/agent-prompt-batch-slash-command.md) (**1106** tks) - Instructions for orchestrating a large, parallelizable change across a codebase.
 - [Agent Prompt: /pr-comments slash command](./system-prompts/agent-prompt-pr-comments-slash-command.md) (**402** tks) - System prompt for fetching and displaying GitHub PR comments.
 - [Agent Prompt: /review-pr slash command](./system-prompts/agent-prompt-review-pr-slash-command.md) (**211** tks) - System prompt for reviewing GitHub pull requests with code analysis.
-- [Agent Prompt: /schedule slash command](./system-prompts/agent-prompt-schedule-slash-command.md) (**2468** tks) - Guides the user through scheduling, updating, listing, or running remote Claude Code agents on cron triggers via the Anthropic cloud API.
+- [Agent Prompt: /schedule slash command](./system-prompts/agent-prompt-schedule-slash-command.md) (**2486** tks) - Guides the user through scheduling, updating, listing, or running remote Claude Code agents on cron triggers via the Anthropic cloud API.
 - [Agent Prompt: /security-review slash command](./system-prompts/agent-prompt-security-review-slash-command.md) (**2607** tks) - Comprehensive security review prompt for analyzing code changes with focus on exploitable vulnerabilities.
 
 #### Utilities
@@ -101,7 +101,7 @@ Sub-agents and utilities.
 - [Agent Prompt: Claude guide agent](./system-prompts/agent-prompt-claude-guide-agent.md) (**734** tks) - System prompt for the claude-guide agent that helps users understand and use Claude Code, the Claude Agent SDK and the Claude API effectively.
 - [Agent Prompt: Coding session title generator](./system-prompts/agent-prompt-coding-session-title-generator.md) (**181** tks) - Generates a title for the coding session.
 - [Agent Prompt: Conversation summarization](./system-prompts/agent-prompt-conversation-summarization.md) (**1121** tks) - System prompt for creating detailed conversation summaries.
-- [Agent Prompt: Determine which memory files to attach](./system-prompts/agent-prompt-determine-which-memory-files-to-attach.md) (**218** tks) - Agent for determining which memory files to attach for the main agent.
+- [Agent Prompt: Determine which memory files to attach](./system-prompts/agent-prompt-determine-which-memory-files-to-attach.md) (**307** tks) - Agent for determining which memory files to attach for the main agent.
 - [Agent Prompt: Dream memory consolidation](./system-prompts/agent-prompt-dream-memory-consolidation.md) (**727** tks) - Instructs an agent to perform a multi-phase memory consolidation pass — orienting on existing memories, gathering recent signal from logs and transcripts, merging updates into topic files, and pruning the index.
 - [Agent Prompt: General purpose](./system-prompts/agent-prompt-general-purpose.md) (**285** tks) - System prompt for the general-purpose subagent that searches, analyzes, and edits code across a codebase while reporting findings concisely to the caller.
 - [Agent Prompt: Hook condition evaluator](./system-prompts/agent-prompt-hook-condition-evaluator.md) (**78** tks) - System prompt for evaluating hook conditions in Claude Code.
@@ -109,13 +109,13 @@ Sub-agents and utilities.
 - [Agent Prompt: Quick PR creation](./system-prompts/agent-prompt-quick-pr-creation.md) (**806** tks) - Streamlined prompt for creating a commit and pull request with pre-populated context.
 - [Agent Prompt: Quick git commit](./system-prompts/agent-prompt-quick-git-commit.md) (**510** tks) - Streamlined prompt for creating a single git commit with pre-populated context.
 - [Agent Prompt: Recent Message Summarization](./system-prompts/agent-prompt-recent-message-summarization.md) (**724** tks) - Agent prompt used for summarizing recent messages.
-- [Agent Prompt: Security monitor for autonomous agent actions (first part)](./system-prompts/agent-prompt-security-monitor-for-autonomous-agent-actions-first-part.md) (**2726** tks) - Instructs Claude to act as a security monitor that evaluates autonomous coding agent actions against block/allow rules to prevent prompt injection, scope creep, and accidental damage.
-- [Agent Prompt: Security monitor for autonomous agent actions (second part)](./system-prompts/agent-prompt-security-monitor-for-autonomous-agent-actions-second-part.md) (**3150** tks) - Defines the environment context, block rules, and allow exceptions that govern which tool actions the agent may or may not perform.
+- [Agent Prompt: Security monitor for autonomous agent actions (first part)](./system-prompts/agent-prompt-security-monitor-for-autonomous-agent-actions-first-part.md) (**3101** tks) - Instructs Claude to act as a security monitor that evaluates autonomous coding agent actions against block/allow rules to prevent prompt injection, scope creep, and accidental damage.
+- [Agent Prompt: Security monitor for autonomous agent actions (second part)](./system-prompts/agent-prompt-security-monitor-for-autonomous-agent-actions-second-part.md) (**3169** tks) - Defines the environment context, block rules, and allow exceptions that govern which tool actions the agent may or may not perform.
 - [Agent Prompt: Session Search Assistant](./system-prompts/agent-prompt-session-search-assistant.md) (**439** tks) - Agent prompt for the session search assistant that finds relevant sessions based on user queries and metadata.
 - [Agent Prompt: Session memory update instructions](./system-prompts/agent-prompt-session-memory-update-instructions.md) (**756** tks) - Instructions for updating session memory files during conversations.
 - [Agent Prompt: Session title and branch generation](./system-prompts/agent-prompt-session-title-and-branch-generation.md) (**307** tks) - Agent for generating succinct session titles and git branch names.
 - [Agent Prompt: Update Magic Docs](./system-prompts/agent-prompt-update-magic-docs.md) (**718** tks) - Prompt for the magic-docs agent.
-- [Agent Prompt: Verification specialist](./system-prompts/agent-prompt-verification-specialist.md) (**2866** tks) - System prompt for a verification subagent that adversarially tests implementations by running builds, test suites, linters, and adversarial probes, then issuing a PASS/FAIL/PARTIAL verdict.
+- [Agent Prompt: Verification specialist](./system-prompts/agent-prompt-verification-specialist.md) (**2938** tks) - System prompt for a verification subagent that adversarially tests implementations by running builds, test suites, linters, and adversarial probes, then issuing a PASS/FAIL/PARTIAL verdict.
 - [Agent Prompt: WebFetch summarizer](./system-prompts/agent-prompt-webfetch-summarizer.md) (**189** tks) - Prompt for agent that summarizes verbose output from WebFetch for the main model.
 - [Agent Prompt: Worker fork execution](./system-prompts/agent-prompt-worker-fork-execution.md) (**404** tks) - System prompt for a forked worker sub-agent that executes a directive directly without spawning further sub-agents, then reports structured results.
 
@@ -363,5 +363,5 @@ Built-in skill prompts for specialized tasks.
 - [Skill: Update Claude Code Config](./system-prompts/skill-update-claude-code-config.md) (**1255** tks) - Skill for modifying Claude Code configuration file (settings.json).
 - [Skill: Verify CLI changes (example for Verify skill)](./system-prompts/skill-verify-cli-changes-example-for-verify-skill.md) (**565** tks) - Example workflow for verifying a CLI change, as part of the Verify skill.
 - [Skill: Verify server/API changes (example for Verify skill)](./system-prompts/skill-verify-serverapi-changes-example-for-verify-skill.md) (**612** tks) - Example workflow for verifying a server/API change, as part of the Verify skill.
-- [Skill: Verify skill](./system-prompts/skill-verify-skill.md) (**1779** tks) - Skill for opinionated verification workflow for validating code changes.
+- [Skill: Verify skill](./system-prompts/skill-verify-skill.md) (**2021** tks) - Skill for opinionated verification workflow for validating code changes.
 - [Skill: update-config (7-step verification flow)](./system-prompts/skill-update-config-7-step-verification-flow.md) (**1160** tks) - A skill that guides Claude through a 7-step process to construct and verify hooks for Claude Code, ensuring they work correctly in the user's specific project environment.
