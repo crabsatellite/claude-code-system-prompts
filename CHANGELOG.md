@@ -4,6 +4,25 @@ Note: Only use **NEW:** for entirely new prompt files, NOT for new additions/sec
 
 ### Claude Code System Prompts Changelog
 
+# [2.1.91](https://github.com/Piebald-AI/claude-code-system-prompts/commit/ca9465e)
+
+_+2,043 tokens_
+
+- **NEW:** Skill: Agent Design Patterns — Added a reference guide covering decision heuristics for building agents on the Claude API, including tool surface design, context management, caching strategies, and composing tool calls.
+- **REMOVED:** Agent Prompt: /pr-comments slash command — Removed the slash command for fetching and displaying GitHub PR comments.
+- **REMOVED:** Agent Prompt: Update Magic Docs — Removed the magic-docs agent prompt.
+- Agent Prompt: Determine which memory files to attach — Replaced the rule about skipping memories for recently-used tools with a simpler rule: do not re-select memories already returned for an earlier query in the same conversation. Also clarified that the first message lists available memories and subsequent messages each contain one user query.
+- Agent Prompt: Security monitor for autonomous agent actions (second part) — Added "Memory Poisoning" block rule covering writes to the agent's memory directory that would function as permission grants, BLOCK-rule bypasses, or fabricated user authorization. Added corresponding "Memory Directory" allow exception for routine memory writes (user preferences, project facts, references) that don't constitute poisoning.
+- Data: Live documentation sources — Added WebFetch URLs for six additional tool documentation pages: Bash Tool, Text Editor, Memory Tool, Tool Search, Programmatic Tool Calling, and Skills. Added Context Editing to the Advanced Features section.
+- Data: Tool use concepts — Added new sections for Skills (task-specific instruction packages loaded on demand) and Context Editing (pruning stale tool results from the transcript). Expanded the Programmatic Tool Calling description to explain the round-trip cost problem and how scripts run in the code execution container. Added note to Tool Search that discovered schemas are appended (preserving prompt cache) and cross-referenced agent design patterns. Added cross-reference to `agent-design.md` in the opening paragraph.
+- Skill: Build with Claude API — Added `shared/agent-design.md` as a new entry in the reading guide for agent design topics (tool surface, context management, caching strategy). Revised effort parameter guidance to recommend `medium` as a favorable balance and `max` when correctness matters more than cost. Renumbered the file reading order to accommodate the new entry.
+- Skill: Build with Claude API (reference guide) — Added a quick-task navigation entry pointing to `shared/agent-design.md` for agent design questions.
+- Skill: Verify skill — Added a **SKIP** verdict for changes with no runtime surface (docs-only, types-only, tests-only), distinct from BLOCKED which now strictly means the verifier couldn't reach an observable state. Added guidance that tests in the diff are the author's evidence, not a verification surface — tests-only PRs should be SKIPped, and mixed PRs should verify the source while ignoring the test files.
+- System Prompt: Agent thread notes — Made the cwd/path guidance conditional: when embedded tools are available, notes that Bash resets to cwd between calls but file-tool paths can be relative; otherwise preserves the existing absolute-paths-only instruction.
+- Tool Description: Edit — Removed the inline note about edits failing when `old_string` is not unique; replaced with a slot for additional edit guidelines.
+- Tool Description: ReadFile — Added support for relative file paths (preferred for brevity) as a conditional alternative to the absolute-path-only requirement. Made the default line-read limit and additional read notes configurable.
+- Tool Description: Write — Replaced the blanket "read first" requirement with a conditional note for new files. Made the "prefer Edit" guidance configurable.
+
 # [2.1.90](https://github.com/Piebald-AI/claude-code-system-prompts/commit/8362366)
 
 _+815 tokens_
