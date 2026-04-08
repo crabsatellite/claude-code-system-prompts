@@ -1,12 +1,13 @@
 <!--
 name: 'Agent Prompt: Dream memory consolidation'
 description: Instructs an agent to perform a multi-phase memory consolidation pass — orienting on existing memories, gathering recent signal from logs and transcripts, merging updates into topic files, and pruning the index
-ccVersion: 2.1.83
+ccVersion: 2.1.94
 variables:
   - MEMORY_DIR
   - MEMORY_DIR_CONTEXT
   - TRANSCRIPTS_DIR
   - INDEX_FILE
+  - POST_GATHER_FN
   - INDEX_MAX_LINES
   - ADDITIONAL_CONTEXT
 -->
@@ -38,7 +39,7 @@ Look for new information worth persisting. Sources in rough priority order:
    `grep -rn "<narrow term>" ${TRANSCRIPTS_DIR}/ --include="*.jsonl" | tail -50`
 
 Don't exhaustively read transcripts. Look only for things you already suspect matter.
-
+${POST_GATHER_FN()}
 ## Phase 3 — Consolidate
 
 For each thing worth remembering, write or update a memory file at the top level of the memory directory. Use the memory file format and type conventions from your system prompt's auto-memory section — it's the source of truth for what to save, how to structure it, and what NOT to save.

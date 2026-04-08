@@ -4,6 +4,26 @@ Note: Only use **NEW:** for entirely new prompt files, NOT for new additions/sec
 
 ### Claude Code System Prompts Changelog
 
+# [2.1.94](https://github.com/Piebald-AI/claude-code-system-prompts/commit/07e1afa)
+
+_+2,000 tokens_
+
+- **NEW:** Agent Prompt: Dream memory pruning — Added a subagent prompt for performing memory pruning passes by deleting stale or invalidated memory files and collapsing duplicates.
+- **NEW:** Agent Prompt: Memory synthesis — Added a subagent that reads persistent memory files and returns a JSON synthesis of only the information relevant to each query, with cited filenames.
+- **NEW:** Agent Prompt: Onboarding guide generator — Added a subagent that co-authors a team onboarding guide (ONBOARDING.md) by analyzing the creator's usage data, classifying session types, and iterating on the draft collaboratively.
+- **NEW:** Agent Prompt: Session search — Added a lightweight subagent prompt for searching past conversation sessions by scanning .jsonl transcript files and returning matching session IDs.
+- **NEW:** System Prompt: Memory description of user details — Added a description for per-user memory files that accumulate details about the user's role, goals, knowledge, and preferences across sessions.
+- **NEW:** System Prompt: Memory staleness verification — Added instructions for the agent to verify memory records against current file/resource state and delete stale memories that conflict with observed reality.
+- **NEW:** Skill: Team onboarding guide — Added a skill template for onboarding a new teammate to a team's Claude Code setup, walking through usage stats, setup checklists, MCP servers, skills, and team tips.
+- **REMOVED:** Agent Prompt: Session Search Assistant — Removed the verbose session search assistant with detailed matching heuristics, replaced by the lighter Session search subagent.
+- **REMOVED:** Agent Prompt: Worker fork execution — Removed the detailed forked worker sub-agent prompt with its 10-rule format and structured output template.
+- **REMOVED:** Tool Description: Agent (when to launch subagents) — Removed the separate "when to launch" description block; its guidance is now folded into the main Agent usage notes.
+- Agent Prompt: Dream memory consolidation — Added a post-gather hook point between the Gather and Consolidate phases.
+- Agent Prompt: Worker fork — Replaced the previous verbose worker fork prompt with a streamlined version focused on concise single-directive execution and reporting.
+- Skill: Build with Claude API — Added a Subcommands dispatch section that lets users invoke specific flows via `/claude-api <subcommand>` by matching against subcommand tables defined throughout the document.
+- Skill: Verify skill — Relaxed the CI assumption from "green checks on the PR mean they passed" to simply noting CI already ran. Refined the Findings guidance to clarify that observations must come from running the app yourself — red CI checks, review comments, or bot outputs visible to anyone already don't count as original observations.
+- Tool Description: Agent (usage notes) — Streamlined usage notes: shortened the description-length guidance, condensed the resume-vs-fresh-agent explanation into a single bullet, removed the note that agent outputs should generally be trusted, shortened the worktree isolation bullet, and simplified the proactive-use guidance.
+
 # [2.1.92](https://github.com/Piebald-AI/claude-code-system-prompts/commit/0b6cc0c)
 
 _-167 tokens_
