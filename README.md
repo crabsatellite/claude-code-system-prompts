@@ -34,7 +34,7 @@ Download it and try it out for free!  **https://piebald.ai/**
 > [!important]
 > **NEW (January 23, 2026): We've added all of Claude Code's ~40 system reminders to this list&mdash;see [System Reminders](#system-reminders).**
 
-This repository contains an up-to-date list of all Claude Code's various system prompts and their associated token counts as of **[Claude Code v2.1.97](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.97) (April 8th, 2026).**  It also contains a [**CHANGELOG.md**](./CHANGELOG.md) for the system prompts across 144 versions since v2.0.14.  From the team behind [<img src="https://github.com/Piebald-AI/piebald/raw/main/assets/logo.svg" width="15"> **Piebald.**](https://piebald.ai/)
+This repository contains an up-to-date list of all Claude Code's various system prompts and their associated token counts as of **[Claude Code v2.1.98](https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.98) (April 9th, 2026).**  It also contains a [**CHANGELOG.md**](./CHANGELOG.md) for the system prompts across 145 versions since v2.0.14.  From the team behind [<img src="https://github.com/Piebald-AI/piebald/raw/main/assets/logo.svg" width="15"> **Piebald.**](https://piebald.ai/)
 
 **This repository is updated within minutes of each Claude Code release.  See the [changelog](./CHANGELOG.md), and follow [@PiebaldAI](https://x.com/PiebaldAI) on X for a summary of the system prompt changes in each release.**
 
@@ -101,8 +101,8 @@ Sub-agents and utilities.
 - [Agent Prompt: Coding session title generator](./system-prompts/agent-prompt-coding-session-title-generator.md) (**181** tks) - Generates a title for the coding session.
 - [Agent Prompt: Conversation summarization](./system-prompts/agent-prompt-conversation-summarization.md) (**1121** tks) - System prompt for creating detailed conversation summaries.
 - [Agent Prompt: Determine which memory files to attach](./system-prompts/agent-prompt-determine-which-memory-files-to-attach.md) (**265** tks) - Agent for determining which memory files to attach for the main agent.
-- [Agent Prompt: Dream memory consolidation](./system-prompts/agent-prompt-dream-memory-consolidation.md) (**737** tks) - Instructs an agent to perform a multi-phase memory consolidation pass — orienting on existing memories, gathering recent signal from logs and transcripts, merging updates into topic files, and pruning the index.
-- [Agent Prompt: Dream memory pruning](./system-prompts/agent-prompt-dream-memory-pruning.md) (**346** tks) - Instructs an agent to perform a memory pruning pass by deleting stale or invalidated memory files and collapsing duplicates in the memory directory.
+- [Agent Prompt: Dream memory consolidation](./system-prompts/agent-prompt-dream-memory-consolidation.md) (**763** tks) - Instructs an agent to perform a multi-phase memory consolidation pass — orienting on existing memories, gathering recent signal from logs and transcripts, merging updates into topic files, and pruning the index.
+- [Agent Prompt: Dream memory pruning](./system-prompts/agent-prompt-dream-memory-pruning.md) (**456** tks) - Instructs an agent to perform a memory pruning pass by deleting stale or invalidated memory files and collapsing duplicates in the memory directory.
 - [Agent Prompt: General purpose](./system-prompts/agent-prompt-general-purpose.md) (**285** tks) - System prompt for the general-purpose subagent that searches, analyzes, and edits code across a codebase while reporting findings concisely to the caller.
 - [Agent Prompt: Hook condition evaluator (stop)](./system-prompts/agent-prompt-hook-condition-evaluator-stop.md) (**145** tks) - System prompt for evaluating hook conditions, specifically stop conditions, in Claude Code.
 - [Agent Prompt: Managed Agents onboarding flow](./system-prompts/agent-prompt-managed-agents-onboarding-flow.md) (**2247** tks) - Interactive interview script that walks users through configuring a Managed Agent from scratch — selecting tools, skills, files, environment settings — and emits setup and runtime code.
@@ -172,6 +172,7 @@ Parts of the main system prompt.
 - [System Prompt: Censoring assistance with malicious activities](./system-prompts/system-prompt-censoring-assistance-with-malicious-activities.md) (**98** tks) - Guidelines for assisting with authorized security testing, defensive security, CTF challenges, and educational contexts while censoring requests for malicious activities.
 - [System Prompt: Chrome browser MCP tools](./system-prompts/system-prompt-chrome-browser-mcp-tools.md) (**156** tks) - Instructions for loading Chrome browser MCP tools via MCPSearch before use.
 - [System Prompt: Claude in Chrome browser automation](./system-prompts/system-prompt-claude-in-chrome-browser-automation.md) (**759** tks) - Instructions for using Claude in Chrome browser automation tools effectively.
+- [System Prompt: Communication style](./system-prompts/system-prompt-communication-style.md) (**305** tks) - Instructs Claude to give brief, user-facing updates at key moments during tool use, write concise end-of-turn summaries, match response format to task complexity, and avoid comments and planning documents in code.
 - [System Prompt: Context compaction summary](./system-prompts/system-prompt-context-compaction-summary.md) (**278** tks) - Prompt used for context compaction summary (for the SDK).
 - [System Prompt: Description part of memory instructions](./system-prompts/system-prompt-description-part-of-memory-instructions.md) (**148** tks) - Field for describing _what_ the memory is.  Part of a bigger effort to instruct Claude how to create memories.
 - [System Prompt: Doing tasks (ambitious tasks)](./system-prompts/system-prompt-doing-tasks-ambitious-tasks.md) (**47** tks) - Allow users to complete ambitious tasks; defer to user judgement on scope.
@@ -185,7 +186,9 @@ Parts of the main system prompt.
 - [System Prompt: Doing tasks (read before modifying)](./system-prompts/system-prompt-doing-tasks-read-before-modifying.md) (**46** tks) - Read and understand existing code before suggesting modifications.
 - [System Prompt: Doing tasks (security)](./system-prompts/system-prompt-doing-tasks-security.md) (**67** tks) - Avoid introducing security vulnerabilities like injection, XSS, etc.
 - [System Prompt: Doing tasks (software engineering focus)](./system-prompts/system-prompt-doing-tasks-software-engineering-focus.md) (**104** tks) - Users primarily request software engineering tasks; interpret instructions in that context.
+- [System Prompt: Dream team memory handling](./system-prompts/system-prompt-dream-team-memory-handling.md) (**279** tks) - Instructions for handling shared team memories during dream consolidation, including deduplication, conservative pruning rules, and avoiding accidental promotion of personal memories.
 - [System Prompt: Executing actions with care](./system-prompts/system-prompt-executing-actions-with-care.md) (**590** tks) - Instructions for executing actions carefully.
+- [System Prompt: Exploratory questions — analyze before implementing](./system-prompts/system-prompt-exploratory-questions-analyze-before-implementing.md) (**117** tks) - Instructs Claude to respond to open-ended questions with analysis, options, and tradeoffs instead of jumping to implementation, waiting for user agreement before writing code.
 - [System Prompt: Fork usage guidelines](./system-prompts/system-prompt-fork-usage-guidelines.md) (**419** tks) - Instructions for when to fork subagents and rules against reading fork output mid-flight or fabricating fork results.
 - [System Prompt: Git status](./system-prompts/system-prompt-git-status.md) (**37** tks) - System prompt for displaying the current git status at the start of the conversation.
 - [System Prompt: Hooks Configuration](./system-prompts/system-prompt-hooks-configuration.md) (**1493** tks) - System prompt for hooks configuration.  Used for above Claude Code config skill.
@@ -231,6 +234,7 @@ Parts of the main system prompt.
 - [System Prompt: Tool usage (skill invocation)](./system-prompts/system-prompt-tool-usage-skill-invocation.md) (**102** tks) - Slash commands invoke user-invocable skills via Skill tool.
 - [System Prompt: Tool usage (subagent guidance)](./system-prompts/system-prompt-tool-usage-subagent-guidance.md) (**103** tks) - Guidance on when and how to use subagents effectively.
 - [System Prompt: Tool usage (task management)](./system-prompts/system-prompt-tool-usage-task-management.md) (**70** tks) - Use TodoWrite to break down and track work progress.
+- [System Prompt: User-facing communication style](./system-prompts/system-prompt-user-facing-communication-style.md) (**535** tks) - Guidelines for writing clear, concise, and readable user-facing text including prose style, update cadence, formatting rules, and audience-aware explanations.
 - [System Prompt: Worker instructions](./system-prompts/system-prompt-worker-instructions.md) (**272** tks) - Instructions for workers to follow when implementing a change.
 - [System Prompt: Writing subagent prompts](./system-prompts/system-prompt-writing-subagent-prompts.md) (**287** tks) - Guidelines for writing effective prompts when delegating tasks to subagents, covering context-inheriting vs fresh subagent scenarios.
 
@@ -306,6 +310,7 @@ Text for large system reminders.
 
 - [Tool Description: Agent (usage notes)](./system-prompts/tool-description-agent-usage-notes.md) (**748** tks) - Usage notes and instructions for the Task/Agent tool, including guidance on launching subagents, background execution, resumption, and worktree isolation.
 - [Tool Description: AskUserQuestion (preview field)](./system-prompts/tool-description-askuserquestion-preview-field.md) (**134** tks) - Instructions for using the HTML preview field on single-select question options to display visual artifacts like UI mockups, code snippets, and diagrams.
+- [Tool Description: Background monitor (streaming events)](./system-prompts/tool-description-background-monitor-streaming-events.md) (**668** tks) - Describes the background monitor tool that streams stdout events from long-running scripts as chat notifications, with guidelines on script quality, output volume, and selective filtering.
 - [Tool Description: Bash (Git commit and PR creation instructions)](./system-prompts/tool-description-bash-git-commit-and-pr-creation-instructions.md) (**1611** tks) - Instructions for creating git commits and GitHub pull requests.
 - [Tool Description: Bash (alternative — communication)](./system-prompts/tool-description-bash-alternative-communication.md) (**18** tks) - Bash tool alternative: output text directly instead of echo/printf.
 - [Tool Description: Bash (alternative — content search)](./system-prompts/tool-description-bash-alternative-content-search.md) (**27** tks) - Bash tool alternative: use Grep for content search instead of grep/rg.
@@ -359,7 +364,7 @@ Text for large system reminders.
 
 Built-in skill prompts for specialized tasks.
 
-- [Skill: /dream nightly schedule](./system-prompts/skill-dream-nightly-schedule.md) (**436** tks) - Sets up a recurring nightly memory consolidation job by deduplicating existing schedules, creating a new cron task, confirming details to the user, and running an immediate consolidation.
+- [Skill: /dream nightly schedule](./system-prompts/skill-dream-nightly-schedule.md) (**441** tks) - Sets up a recurring nightly memory consolidation job by deduplicating existing schedules, creating a new cron task, confirming details to the user, and running an immediate consolidation.
 - [Skill: /init CLAUDE.md and skill setup (new version)](./system-prompts/skill-init-claudemd-and-skill-setup-new-version.md) (**4618** tks) - A comprehensive onboarding flow for setting up CLAUDE.md and related skills/hooks in the current repository, including codebase exploration, user interviews, and iterative proposal refinement.
 - [Skill: /loop slash command](./system-prompts/skill-loop-slash-command.md) (**1040** tks) - Parses user input into an interval and prompt, converts the interval to a cron expression, and schedules a recurring task.
 - [Skill: /stuck slash command](./system-prompts/skill-stuck-slash-command.md) (**964** tks) - Diagnozse frozen or slow Claude Code sessions.

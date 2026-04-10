@@ -4,6 +4,21 @@ Note: Only use **NEW:** for entirely new prompt files, NOT for new additions/sec
 
 ### Claude Code System Prompts Changelog
 
+# [2.1.98](https://github.com/Piebald-AI/claude-code-system-prompts/commit/a23620e)
+
+_+2,045 tokens_
+
+- **NEW:** System Prompt: Communication style — Added guidelines for giving brief user-facing updates at key moments during tool use, writing concise end-of-turn summaries, matching response format to task complexity, and avoiding comments and planning documents in code.
+- **NEW:** System Prompt: Dream team memory handling — Added instructions for handling shared team memories during dream consolidation, including deduplication, conservative pruning rules, and avoiding accidental promotion of personal memories.
+- **NEW:** System Prompt: Exploratory questions — analyze before implementing — Added instructions for Claude to respond to open-ended questions with analysis, options, and tradeoffs instead of jumping to implementation, waiting for user agreement before writing code.
+- **NEW:** System Prompt: User-facing communication style — Added detailed guidelines for writing clear, concise, and readable user-facing text including prose style, update cadence, formatting rules, and audience-aware explanations.
+- **NEW:** Tool Description: Background monitor (streaming events) — Added description for a background monitor tool that streams stdout events from long-running scripts as chat notifications, with guidelines on script quality, output volume, and selective filtering.
+- Agent Prompt: Dream memory consolidation — Added support for an optional transcript source note displayed after the transcripts directory path.
+- Agent Prompt: Dream memory pruning — Added conservative pruning rules for `team/` subdirectory memories: only delete when clearly contradicted or superseded by a newer team memory, never delete just because unrecognized or irrelevant to recent sessions, and never move personal memories into `team/`.
+- Skill: /dream nightly schedule — Minor refactor to include memory directory reference in the consolidation configuration.
+- System Prompt: Advisor tool instructions — Minor wording updates: clarified tool invocation syntax, broadened 'before writing code' to 'before writing,' and updated several examples and descriptions for generality (e.g., 'reading code' → 'fetching a source,' 'the code does Y' → 'the paper states Y').
+
+
 # [2.1.97](https://github.com/Piebald-AI/claude-code-system-prompts/commit/38cf6fe)
 
 _+23,865 tokens_

@@ -1,7 +1,7 @@
 <!--
 name: 'Skill: /dream nightly schedule'
 description: Sets up a recurring nightly memory consolidation job by deduplicating existing schedules, creating a new cron task, confirming details to the user, and running an immediate consolidation
-ccVersion: 2.1.97
+ccVersion: 2.1.98
 variables:
   - CRON_LIST_TOOL_NAME
   - CRON_DELETE_TOOL_NAME
@@ -12,6 +12,7 @@ variables:
   - CONSOLIDATE_SKILL_FN
   - CONSOLIDATE_PROMPT
   - MEMORY_STORE_PATH
+  - MEMORY_DIR
   - CONSOLIDATION_OPTIONS
 -->
 # Dream: Schedule Nightly Consolidation
@@ -42,4 +43,4 @@ Tell the user:
 
 **Step 4 — Run an immediate consolidation**
 
-${CONSOLIDATE_SKILL_FN(CONSOLIDATE_PROMPT,MEMORY_STORE_PATH,CONSOLIDATION_OPTIONS)}
+${CONSOLIDATE_SKILL_FN(CONSOLIDATE_PROMPT,MEMORY_STORE_PATH,MEMORY_DIR,CONSOLIDATION_OPTIONS)}
